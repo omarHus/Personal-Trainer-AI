@@ -5,7 +5,6 @@ import os
 
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
-print(uploads_dir)
 static_dir  = 'static/images'
 os.makedirs(static_dir, exist_ok=True)
 os.makedirs(uploads_dir,exist_ok=True)
