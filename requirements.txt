@@ -10,5 +10,7 @@ opencv-python
 flask
 wtforms
 ffmpeg-python
+ffprobe
+ffprobe3
 flask_session
 gunicorn
