@@ -1,23 +1,3 @@
-import cv2
-import math
-import matplotlib.pyplot as plt
-import pandas as pd
-from keras.preprocessing import image
-import numpy as np
-from keras.utils import np_utils
-from skimage.transform import resize
-from keras.applications.vgg16 import preprocess_input
-from sklearn.model_selection import train_test_split
-from keras.models import Sequential
-from keras.applications.vgg16 import VGG16
-from keras.layers import Dense, InputLayer, Dropout
-import os, ssl
-import imageio
-from enum import Enum
-import ffmpeg
-import os.path
-from os import path
-
 def main():
     test_data  = loadInTestImages('instance/uploads/newImports.csv')
     test_image = test_data[2]
