@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, request, redirect, session
 from werkzeug import secure_filename
-import testModel2 as tm
+import testModel2 as tm2
 import os
 
 app = Flask(__name__)
@@ -22,26 +22,26 @@ def run_test():
     if request.method == 'POST':
         file = request.files['file']
         file.save(os.path.join(uploads_dir, secure_filename(file.filename)))
-        tm.makeFrames(file.filename, uploads_dir)
+        tm2.makeFrames(file.filename, uploads_dir)
         return redirect('/results')
 
 @app.route('/results')
 def results():
     # load model, test and show results
-    test_data  = tm.loadInTestImages(os.path.join(uploads_dir,"newImports.csv"))
+    test_data  = tm2.loadInTestImages(os.path.join(uploads_dir,"newImports.csv"))
     orig_image = test_data[3]
     test_image = test_data[2]
     test_y     = test_data[1]
     numTests   = test_data[0]
 
-    test_image = tm.load_basemodel(test_image, numTests)
-    model      = tm.loadTrainedModel('trained_model.h5')
+    test_image = tm2.load_basemodel(test_image, numTests)
+    model      = tm2.loadTrainedModel('trained_model.h5')
 
-    predictions = tm.makepredictions(model, test_image)
+    predictions = tm2.makepredictions(model, test_image)
     goodSquats  = predictions[predictions==0].shape[0]
     badSquats   = predictions[predictions==1].shape[0]
-    labeledImgs = tm.createLabeledImages(orig_image, predictions)
-    movie       = tm.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
+    labeledImgs = tm2.createLabeledImages(orig_image, predictions)
+    movie       = tm2.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
 
     return render_template('/results.html', goodSquats=goodSquats, badSquats=badSquats, movie=movie)
 
