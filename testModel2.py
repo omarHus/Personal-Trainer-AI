@@ -138,18 +138,22 @@ def getVidname():
 
 def check_rotation(path_video_file):
     # this returns meta-data of the video file in form of a dictionary
-    meta_dict = ffmpeg.probe(path_video_file)
-    # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
-    # we are looking for
-    rotateCode = None
     try:
-        if int(meta_dict['streams'][0]['tags']['rotate']) == 90:
-            rotateCode = cv2.ROTATE_90_CLOCKWISE
-        elif int(meta_dict['streams'][0]['tags']['rotate']) == 180:
-            rotateCode = cv2.ROTATE_180
-        elif int(meta_dict['streams'][0]['tags']['rotate']) == 270:
-            rotateCode = cv2.ROTATE_90_COUNTERCLOCKWISE
-    except KeyError as error:
+        meta_dict = ffmpeg.probe(path_video_file)
+   
+        # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
+        # we are looking for
+        rotateCode = None
+        try:
+            if int(meta_dict['streams'][0]['tags']['rotate']) == 90:
+                rotateCode = cv2.ROTATE_90_CLOCKWISE
+            elif int(meta_dict['streams'][0]['tags']['rotate']) == 180:
+                rotateCode = cv2.ROTATE_180
+            elif int(meta_dict['streams'][0]['tags']['rotate']) == 270:
+                rotateCode = cv2.ROTATE_90_COUNTERCLOCKWISE
+        except KeyError as error:
+            rotateCode = None
+    except:
         rotateCode = None
     
     return rotateCode
@@ -158,8 +162,9 @@ def correct_rotation(frame, rotateCode):
     return cv2.rotate(frame, rotateCode) 
 
 def makeFrames(videoFile, directory):
-    cap = cv2.VideoCapture(videoFile)   # capturing the video from the given path
-    rotateCode = check_rotation(videoFile)
+    fullpath = directory + "/" + videoFile
+    cap = cv2.VideoCapture(fullpath)   # capturing the video from the given path
+    rotateCode = check_rotation(fullpath)
     frameRate = cap.get(5) #frame rate
     count = 0
     csv_file = directory + "/newImports.csv"
