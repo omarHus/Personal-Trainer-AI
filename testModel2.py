@@ -55,7 +55,7 @@ def createLabeledImages(orig_images, labels):
             color = (0,255,0)
         else:
             color = (255,0,0)
-        cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 2, color)
+        cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 4, color)
         count += 1
     cv2.destroyAllWindows()
     
@@ -138,22 +138,19 @@ def getVidname():
 
 def check_rotation(path_video_file):
     # this returns meta-data of the video file in form of a dictionary
+    meta_dict = ffmpeg.probe(path_video_file)
+
+    # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
+    # we are looking for
+    rotateCode = None
     try:
-        meta_dict = ffmpeg.probe(path_video_file)
-   
-        # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
-        # we are looking for
-        rotateCode = None
-        try:
-            if int(meta_dict['streams'][0]['tags']['rotate']) == 90:
-                rotateCode = cv2.ROTATE_90_CLOCKWISE
-            elif int(meta_dict['streams'][0]['tags']['rotate']) == 180:
-                rotateCode = cv2.ROTATE_180
-            elif int(meta_dict['streams'][0]['tags']['rotate']) == 270:
-                rotateCode = cv2.ROTATE_90_COUNTERCLOCKWISE
-        except KeyError as error:
-            rotateCode = None
-    except:
+        if int(meta_dict['streams'][0]['tags']['rotate']) == 90:
+            rotateCode = cv2.ROTATE_90_CLOCKWISE
+        elif int(meta_dict['streams'][0]['tags']['rotate']) == 180:
+            rotateCode = cv2.ROTATE_180
+        elif int(meta_dict['streams'][0]['tags']['rotate']) == 270:
+            rotateCode = cv2.ROTATE_90_COUNTERCLOCKWISE
+    except KeyError as error:
         rotateCode = None
     
     return rotateCode

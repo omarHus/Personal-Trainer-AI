@@ -1,2 +1,5 @@
 myenv
 *.pyc
+static
+instance
+newImports.csv
