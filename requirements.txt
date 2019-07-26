@@ -11,3 +11,4 @@ flask
 wtforms
 ffmpeg-python
 flask_session
+gunicorn
