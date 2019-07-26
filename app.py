@@ -1,7 +1,13 @@
 from flask import Flask, render_template, flash, request, redirect, session
 from werkzeug import secure_filename
+from vid2frame_func import makeFrames
+import os
 
 app = Flask(__name__)
+uploads_dir = os.path.join(app.instance_path, 'uploads')
+static_dir  = 'static/images'
+os.makedirs(static_dir, exist_ok=True)
+os.makedirs(uploads_dir,exist_ok=True)
 
 @app.route('/')
 def index():
@@ -16,9 +22,28 @@ def run_test():
     if request.method == 'POST':
         file = request.files['file']
         file.save(os.path.join(uploads_dir, secure_filename(file.filename)))
-        print(file.filename)
         makeFrames(file.filename, uploads_dir)
         return redirect('/results')
+
+@app.route('/results')
+def results():
+    # load model, test and show results
+    test_data  = tm.loadInTestImages(os.path.join(uploads_dir,"newImports.csv"))
+    orig_image = test_data[3]
+    test_image = test_data[2]
+    test_y     = test_data[1]
+    numTests   = test_data[0]
+
+    test_image = tm.load_basemodel(test_image, numTests)
+    model      = tm.loadTrainedModel('https://github.com/omarHus/physioWebApp/blob/master/trained_model.h5')
+
+    predictions = tm.makepredictions(model, test_image)
+    goodSquats  = predictions[predictions==0].shape[0]
+    badSquats   = predictions[predictions==1].shape[0]
+    labeledImgs = tm.createLabeledImages(orig_image, predictions)
+    movie       = tm.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
+
+    return render_template('/results.html', goodSquats=goodSquats, badSquats=badSquats, movie=movie)
 
 if __name__ == '__main__':
     app.run(debug=True)
