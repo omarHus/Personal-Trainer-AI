@@ -17,7 +17,6 @@ from keras.applications.vgg16 import VGG16
 from keras.layers import Dense, InputLayer, Dropout
 import ssl
 import imageio
-from enum import Enum
 import ffmpeg
 import os.path
 from os import path

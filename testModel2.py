@@ -98,10 +98,6 @@ def makepredictions(modelName, testCases):
     predictions = modelName.predict_classes(testCases)
     return predictions
 
-class ModelMode(Enum):
-    TRAINING = 1
-    TESTING  = 2
-
 def mode():
     while(True):
         modenum = int(input("Enter Mode:\n1 - Training\n2 - Testing\n"))
