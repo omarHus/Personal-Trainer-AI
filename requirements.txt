@@ -1,0 +1,13 @@
+numpy
+setuptools
+tensorflow
+matplotlib
+keras
+pandas
+scikit-image
+scikit-learn
+opencv-python
+flask
+wtforms
+ffmpeg-python
+flask_session
