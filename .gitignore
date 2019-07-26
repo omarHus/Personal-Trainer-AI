@@ -3,3 +3,4 @@ myenv
 static
 instance
 newImports.csv
+trained_model.h5
