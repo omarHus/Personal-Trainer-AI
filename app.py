@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, request, redirect, session
 from werkzeug import secure_filename
-from vid2frame_func import makeFrames
+import testModel2
 import os
 
 app = Flask(__name__)
@@ -22,7 +22,7 @@ def run_test():
     if request.method == 'POST':
         file = request.files['file']
         file.save(os.path.join(uploads_dir, secure_filename(file.filename)))
-        makeFrames(file.filename, uploads_dir)
+        tm.makeFrames(file.filename, uploads_dir)
         return redirect('/results')
 
 @app.route('/results')
