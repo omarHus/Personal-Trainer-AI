@@ -1,5 +1,6 @@
 from flask import Flask, render_template, flash, request, redirect, session
 from werkzeug import secure_filename
+from keras.utils.data_utils import get_file
 import testModel2 as tm2
 import os
 
@@ -35,7 +36,9 @@ def results():
     numTests   = test_data[0]
 
     test_image = tm2.load_basemodel(test_image, numTests)
-    model      = tm2.loadTrainedModel('trained_model.h5')
+    weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
+    print("*********" + weights_path + "***********")
+    model      = tm2.loadTrainedModel(weights_path)
 
     predictions = tm2.makepredictions(model, test_image)
     goodSquats  = predictions[predictions==0].shape[0]

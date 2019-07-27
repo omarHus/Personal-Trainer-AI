@@ -5,6 +5,7 @@ import pandas as pd
 from keras.preprocessing import image
 import numpy as np
 from keras.utils import np_utils
+from keras.utils.data_utils import get_file
 from skimage.transform import resize
 from keras.applications.vgg16 import preprocess_input
 from sklearn.model_selection import train_test_split
@@ -25,7 +26,7 @@ def main():
     orig_image = test_data[3]
 
     test_image = load_basemodel(test_image, numTests)
-    model      = loadTrainedModel('trained_model.h5')
+    model      = loadTrainedModel('https://raw.github.com/omarHus/physioWebApp/blob/master/trained_model.h5')
 
     predictions = makepredictions(model, test_image)
     new_images  = createLabeledImages(orig_image, predictions)
