@@ -12,12 +12,16 @@ os.makedirs(uploads_dir,exist_ok=True)
 
 # Cloud server setup
 import cloudinary as cloud
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
+import cloudinary.api
 cloud.config(
   cloud_name = os.environ['CLOUDINARY_CLOUD_NAME'], 
   api_key    = os.environ['CLOUDINARY_API_KEY'],
   api_secret = os.environ['CLOUDINARY_API_SECRET'],
-)
+) # This data is stored in config vars on heroku
 
+#Homepage of website
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -26,34 +30,33 @@ def index():
 def upload_file():
     return render_template('/upload_file.html')
 
+# When file is uploaded this method runs, loads the trained model and makes predictions
 @app.route('/run_test', methods=['GET', 'POST'])
 def run_test():
     if request.method == 'POST':
         file = request.files['file']
-        file.save(os.path.join(uploads_dir, secure_filename(file.filename)))
-        tm2.makeFrames(file.filename, uploads_dir)
-        return redirect('/results')
+        # file.save(os.path.join(uploads_dir, secure_filename(file.filename))) # for local use
+        response  = upload(file, folder="squat_videos", resource_type = "video") #cloud upload
+        newFrames = tm2.makeFrames(response['secure_url']) #make image frames for predictions
 
-@app.route('/results')
-def results():
-    # load model, test and show results
-    test_data  = tm2.loadInTestImages(os.path.join(uploads_dir,"newImports.csv"))
-    orig_image = test_data[3]
-    test_image = test_data[2]
-    test_y     = test_data[1]
-    numTests   = test_data[0]
+        test_data  = tm2.processImages(newFrames)
+        orig_image = test_data[3]
+        test_image = test_data[2]
+        test_y     = test_data[1]
+        numTests   = test_data[0]
 
-    test_image = tm2.load_basemodel(test_image, numTests)
-    weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
-    model      = tm2.loadTrainedModel(weights_path)
+        test_image = tm2.load_basemodel(test_image, numTests)
+        weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
+        model      = tm2.loadTrainedModel(weights_path)
 
-    predictions = tm2.makepredictions(model, test_image)
-    goodSquats  = predictions[predictions==0].shape[0]
-    badSquats   = predictions[predictions==1].shape[0]
-    labeledImgs = tm2.createLabeledImages(orig_image, predictions)
-    movie       = tm2.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
-
-    return render_template('/results.html', goodSquats=goodSquats, badSquats=badSquats, movie=movie)
+        predictions = tm2.makepredictions(model, test_image)
+        goodSquats  = predictions[predictions==0].shape[0]
+        badSquats   = predictions[predictions==1].shape[0]
+        labeledImgs = tm2.createLabeledImages(orig_image, predictions)
+        movie       = tm2.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
+        return render_template('/results.html', goodSquats=goodSquats, badSquats=badSquats, movie=movie) #sending data to html page to display
+    else:
+        return render_template('/upload_file.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
