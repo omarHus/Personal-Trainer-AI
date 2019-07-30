@@ -4,7 +4,5 @@ static
 instance
 newImports.csv
 trained_model.h5
-vid2frame_func.py
-trainModel_module.py
 Training
 videos
