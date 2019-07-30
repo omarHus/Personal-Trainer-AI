@@ -37,7 +37,6 @@ def results():
 
     test_image = tm2.load_basemodel(test_image, numTests)
     weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
-    print("*********" + weights_path + "***********")
     model      = tm2.loadTrainedModel(weights_path)
 
     predictions = tm2.makepredictions(model, test_image)

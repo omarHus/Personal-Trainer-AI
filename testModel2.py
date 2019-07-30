@@ -31,10 +31,7 @@ def main():
     predictions = makepredictions(model, test_image)
     new_images  = createLabeledImages(orig_image, predictions)
     videoOutput(new_images)
-    # for img in new_images:
-    #     cv2.imshow('new_img',img)
-    #     cv2.waitKey(1000)
-    # cv2.destroyAllWindows()
+
     # scores = model.evaluate(test_image, test_y)
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
@@ -45,7 +42,7 @@ def classMap(classNumber):
         return "Bad Squat"
 
 def videoOutput(frames, output_path):
-    imageio.mimsave(output_path, frames, duration=0.3)
+    imageio.mimsave(output_path, frames, duration=0.4)
     return output_path
 
 def createLabeledImages(orig_images, labels):
@@ -56,7 +53,7 @@ def createLabeledImages(orig_images, labels):
             color = (0,255,0)
         else:
             color = (255,0,0)
-        cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 4, color)
+        cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 5, color)
         count += 1
     cv2.destroyAllWindows()
     
@@ -163,7 +160,6 @@ def makeFrames(videoFile, directory):
     fullpath = directory + "/" + videoFile
     cap = cv2.VideoCapture(fullpath)   # capturing the video from the given path
     rotateCode = check_rotation(fullpath)
-    frameRate = cap.get(5) #frame rate
     count = 0
     csv_file = directory + "/newImports.csv"
     f = open(csv_file,'w')
@@ -173,7 +169,7 @@ def makeFrames(videoFile, directory):
         ret, frame = cap.read()
         if (ret != True):
             break
-        if (frameId % math.floor(frameRate) == 0):
+        if (frameId % 8 == 0):
             if rotateCode is not None:
                 frame = correct_rotation(frame, rotateCode)    
             filename = directory + "/image%d.jpg" % count;count+=1
