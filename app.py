@@ -10,6 +10,14 @@ static_dir  = 'static/images'
 os.makedirs(static_dir, exist_ok=True)
 os.makedirs(uploads_dir,exist_ok=True)
 
+# Cloud server setup
+import cloudinary as cloud
+cloud.config(
+  cloud_name = os.environ['CLOUDINARY_CLOUD_NAME'], 
+  api_key    = os.environ['CLOUDINARY_API_KEY'],
+  api_secret = os.environ['CLOUDINARY_API_SECRET'],
+)
+
 @app.route('/')
 def index():
     return render_template('index.html')
