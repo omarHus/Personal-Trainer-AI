@@ -1,5 +1,10 @@
 # Personal Trainer AI App
 
+## Goal:
+- Personal Trainer in your pocket app.
+- Provide user live feedback on their movements during specific exercises.
+- Use machine learning models to classify correct and incorrect movement.
+
 ## Pre-requisites
 - Git
 - Python 3.7.x
