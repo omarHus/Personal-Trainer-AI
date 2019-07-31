@@ -32,11 +32,11 @@ def makeFrames(videoFile):
     rotateCode = check_rotation(videoFile)
 
     while(cap.isOpened()):
-        print("i'm in")
         frameId = cap.get(1) #current frame number
         ret, frame = cap.read()
         if (ret != True):
             break
+        print("Frame read successfully, ret = ", ret)
         if (frameId % 8 == 0): #only take 1/8 of the frames captured
             if rotateCode is not None:
                 frame = correct_rotation(frame, rotateCode)
