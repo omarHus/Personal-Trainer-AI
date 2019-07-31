@@ -113,8 +113,13 @@ def load_basemodel(testImages, num_of_tests):
         getattr(ssl, '_create_unverified_context', None)): 
         ssl._create_default_https_context = ssl._create_unverified_context
         base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+    print("**********************************************************************************")
+    print("**********************************************************************************")
+    print("Number of tests = ", num_of_tests)
+    print("TestImages length is: ", len(testImages))
+    print("**********************************************************************************")
+    print("**********************************************************************************")
     testImages = base_model.predict(testImages)
-
     # converting the images to 1-D form
     testImages = testImages.reshape(num_of_tests, 7*7*512)
 
