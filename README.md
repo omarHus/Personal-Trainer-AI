@@ -16,6 +16,7 @@
 ## How to Run on Local Host
 - Go to local directory. From command line: python3 app.py
 - Copy the url: http://127.0.0.1:5000/ and paste in a browser
+- or command line: flask run
 
 ## Development
 - app.py:            Flask app deployed on Heroku.
@@ -35,4 +36,7 @@
 
 ## To do:
 - Integrate cloud server to hold video files uploaded by user (directly upload files to this server with javascript - instead of using POST to heroku (too slow))
+    - I have downloaded jquery files needed in static/js/ directory
+    - script tags have been added to base.html
+    - Now we need to write a jquery function to upload our files directly to cloudinary
 - Create postgres sql database to keep track of filenames and paths (integrate with Heroku)
