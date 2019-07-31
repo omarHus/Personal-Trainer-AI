@@ -40,12 +40,6 @@ def run_test():
         print("Response = ", response['secure_url'])
         if response:
             newFrames = tm2.makeFrames(response['secure_url']) #make image frames for predictions
-            print("**********************************************************************************")
-            print("**********************************************************************************")
-            print("Number of newFrames = ", newFrames)
-            print("**********************************************************************************")
-            print("**********************************************************************************")
-
             test_data  = tm2.processImages(newFrames)
             orig_image = test_data[3]
             test_image = test_data[2]

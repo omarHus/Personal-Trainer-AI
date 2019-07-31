@@ -30,7 +30,7 @@ def makeFrames(videoFile):
     cap        = cv2.VideoCapture(videoFile)
     print("See if video file was uploaded, cap: ", cap)
     rotateCode = check_rotation(videoFile)
-
+    print("Rotate Code = ", rotateCode)
     while(cap.isOpened()):
         frameId = cap.get(1) #current frame number
         ret, frame = cap.read()

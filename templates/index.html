@@ -4,5 +4,6 @@
     <p>This app evaluates squat form based on a machine learning algorithm.<br>
         Add a video of you squatting from any angle and the app will give you feedback on your form.<br>
         Your video will be used to further train the algorithm so that it increases in accuracy.</p>
+    <img src="{{ url_for('static', filename='images/movie.gif') }}" width="25%">
     <h2><a href="{{ url_for('upload_file') }}">Test it!</a></h2>
 {% endblock %}

@@ -12,6 +12,10 @@
 - virtualenv
 - activate virtualenv (myenv) with command line command: source myenv/bin/activate
 - see requirements.txt file to set up virtual env (pip3 install -r requirements.txt)
+- For cloudinary: make sure to run these config vars commands in terminal before starting (i'll email you the api_secret key):
+        export CLOUDINARY_CLOUD_NAME="aitrainer"  
+        export CLOUDINARY_API_KEY="862358378255759"  
+        export CLOUDINARY_API_SECRET="****************" 
 
 ## How to Run on Local Host
 - Go to local directory. From command line: python3 app.py
