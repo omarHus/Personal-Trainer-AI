@@ -41,6 +41,11 @@ def makeFrames(videoFile):
             frames.append(frame)
     cap.release()
     print("Frames made successfully!")
+    print("**********************************************************************************")
+    print("**********************************************************************************")
+    print("Number of frames made = ", len(frames))
+    print("**********************************************************************************")
+    print("**********************************************************************************")
     return frames
 
 #Create Gif out of labeled output images to display on results.html page
@@ -115,7 +120,7 @@ def load_basemodel(testImages, num_of_tests):
         base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
     print("**********************************************************************************")
     print("**********************************************************************************")
-    print("Number of tests = ", num_of_tests)
+    print("Number of tests in base model = ", num_of_tests)
     print("TestImages length is: ", len(testImages))
     print("**********************************************************************************")
     print("**********************************************************************************")

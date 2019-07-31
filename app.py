@@ -38,6 +38,11 @@ def run_test():
         file = request.files['file']
         response  = upload(file, folder="squat_videos", resource_type = "video") #cloud upload
         newFrames = tm2.makeFrames(response['secure_url']) #make image frames for predictions
+        print("**********************************************************************************")
+        print("**********************************************************************************")
+        print("Number of newFrames = ", newFrames)
+        print("**********************************************************************************")
+        print("**********************************************************************************")
 
         test_data  = tm2.processImages(newFrames)
         orig_image = test_data[3]
