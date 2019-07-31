@@ -3,6 +3,7 @@ from werkzeug import secure_filename
 from keras.utils.data_utils import get_file
 import testModel2 as tm2
 import os
+import json
 
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
@@ -33,13 +34,14 @@ def upload_file():
 # When file is uploaded this method runs, loads the trained model and makes predictions
 @app.route('/run_test', methods=['GET', 'POST'])
 def run_test():
-    #This is a server-side upload of the video file from the user -> would like this to be browser side direct to cloudinary
+    #Handle user video file input
     if request.method == 'POST':
-        file = request.files['file']
-        response  = upload(file, folder="squat_videos", resource_type = "video") #cloud upload
-        print("Response = ", response['secure_url'])
-        if response:
-            newFrames = tm2.makeFrames(response['secure_url']) #make image frames for predictions
+        # Get json text showing that file has been uploaded directly to cloudinary successfully
+        response = request.form['javascript_data']
+        response =  json.loads(response)
+        #Make the images and test them against the model
+        if response['secure_url']:
+            newFrames  = tm2.makeFrames(response['secure_url']) #make image frames for predictions
             test_data  = tm2.processImages(newFrames)
             orig_image = test_data[3]
             test_image = test_data[2]
@@ -56,8 +58,6 @@ def run_test():
             labeledImgs = tm2.createLabeledImages(orig_image, predictions)
             movie       = tm2.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
             return render_template('/results.html', goodSquats=goodSquats, badSquats=badSquats, movie=movie) #sending data to html page to display
-        else:
-            print("ERROR: Could not upload from cloud.")
     return render_template('/upload_file.html')
 
 if __name__ == '__main__':

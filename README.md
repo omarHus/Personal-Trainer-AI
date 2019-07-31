@@ -38,10 +38,7 @@
 - This will open server and host site.
 - then open site with command line: heroku open
 
-## To do:
-- Integrate cloud server to hold video files uploaded by user (directly upload files to this server with javascript - instead of using POST to heroku (too slow))
-    - I have downloaded jquery files needed in static/js/ directory
-    - script tags have been added to base.html
-    - Now we need to write a jquery function to upload our files directly to cloudinary
+## To do:)
+- I integrated the cloud server (cloudinary) using javascript but we still need to write some javascript showing that our function is in progress during app.route(/run_test)
 - Create postgres sql database to keep track of filenames and paths (integrate with Heroku)
 - Server side (flask app.py): authenticate clients and keep track of sessions so that we don't have people posting same video multiple times and one user trying to upload too many videos

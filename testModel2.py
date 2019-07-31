@@ -27,27 +27,20 @@ def main():
 
 def makeFrames(videoFile):
     frames     = []
-    cap        = cv2.VideoCapture(videoFile)
-    print("See if video file was uploaded, cap: ", cap)
-    rotateCode = check_rotation(videoFile)
-    print("Rotate Code = ", rotateCode)
+    cap        = cv2.VideoCapture(videoFile) #use opencv to capture video file
+    rotateCode = check_rotation(videoFile) #check if video got rotated
+
     while(cap.isOpened()):
         frameId = cap.get(1) #current frame number
         ret, frame = cap.read()
         if (ret != True):
             break
-        print("Frame read successfully, ret = ", ret)
         if (frameId % 8 == 0): #only take 1/8 of the frames captured
+            print("I'm making framessssssss!")
             if rotateCode is not None:
                 frame = correct_rotation(frame, rotateCode)
             frames.append(frame)
     cap.release()
-    print("Frames made successfully!")
-    print("**********************************************************************************")
-    print("**********************************************************************************")
-    print("Number of frames made = ", len(frames))
-    print("**********************************************************************************")
-    print("**********************************************************************************")
     return frames
 
 #Create Gif out of labeled output images to display on results.html page
@@ -120,12 +113,6 @@ def load_basemodel(testImages, num_of_tests):
         getattr(ssl, '_create_unverified_context', None)): 
         ssl._create_default_https_context = ssl._create_unverified_context
         base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-    print("**********************************************************************************")
-    print("**********************************************************************************")
-    print("Number of tests in base model = ", num_of_tests)
-    print("TestImages length is: ", len(testImages))
-    print("**********************************************************************************")
-    print("**********************************************************************************")
     testImages = base_model.predict(testImages)
     # converting the images to 1-D form
     testImages = testImages.reshape(num_of_tests, 7*7*512)
