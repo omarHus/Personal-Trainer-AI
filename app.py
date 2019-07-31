@@ -33,9 +33,9 @@ def upload_file():
 # When file is uploaded this method runs, loads the trained model and makes predictions
 @app.route('/run_test', methods=['GET', 'POST'])
 def run_test():
+    #This is a server-side upload of the video file from the user -> would like this to be browser side direct to cloudinary
     if request.method == 'POST':
         file = request.files['file']
-        # file.save(os.path.join(uploads_dir, secure_filename(file.filename))) # for local use
         response  = upload(file, folder="squat_videos", resource_type = "video") #cloud upload
         newFrames = tm2.makeFrames(response['secure_url']) #make image frames for predictions
 

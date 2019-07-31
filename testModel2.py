@@ -21,6 +21,7 @@ import os.path
 from os import path
 
 def main():
+    makeFrames('fakefile.txt')
     # scores = model.evaluate(test_image, test_y)
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
