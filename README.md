@@ -40,3 +40,4 @@
     - script tags have been added to base.html
     - Now we need to write a jquery function to upload our files directly to cloudinary
 - Create postgres sql database to keep track of filenames and paths (integrate with Heroku)
+- Server side (flask app.py): authenticate clients and keep track of sessions so that we don't have people posting same video multiple times and one user trying to upload too many videos

@@ -45,7 +45,7 @@ def makeFrames(videoFile):
 
 #Create Gif out of labeled output images to display on results.html page
 def videoOutput(frames, output_path):
-    imageio.mimsave(output_path, frames, duration=0.4)
+    imageio.mimsave(output_path, frames, duration=0.2)
     return output_path
 
 #Label frames based on predictions from model e.g. Good squat or bad squat
