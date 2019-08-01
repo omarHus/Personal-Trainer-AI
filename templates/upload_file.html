@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>Submit Squat Video File</h2>
+    <div id="progress">
+        <p></p>
+    </div>
     <form action="" method="post" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
         <fieldset>
           <legend>Upload</legend>
@@ -49,7 +52,9 @@
             
             }     
                 else{
-                    alert("Still Uploading...Please waits");
+                    console.log("Error!");
+                    var elem = document.getElementById("progress");
+                    elem.innerHTML = "Upload in progress"
                 }
         }   
     }
