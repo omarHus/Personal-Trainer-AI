@@ -38,7 +38,7 @@
 - This will open server and host site.
 - then open site with command line: heroku open
 
-## To do:)
+## To do:
 - Errors are occuring when opencv tries to read in frames from the videofile in the cloud server. Need to figure this out. In testModel2.py: makeFrames(videoFile), the line with cap.read() returns false for some reason.
 - Create postgres sql database to keep track of filenames and paths (integrate with Heroku)
 - Server side (flask app.py): authenticate clients and keep track of sessions so that we don't have people posting same video multiple times and one user trying to upload too many videos
