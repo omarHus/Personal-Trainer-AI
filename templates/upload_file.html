@@ -1,10 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>Submit Squat Video File</h2>
-    <form action = "{{url_for('run_test')}}" method = "POST" 
-        enctype = "multipart/form-data">
-        <input type = "file" name = "file" />
-        <input type = "submit"/>
+    <form action="" method="post" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
+        <fieldset>
+          <legend>Upload</legend>
+          <p>
+            <input type="hidden" name="upload_preset" value="jck6vrrm">
+          </p>
+          <p>
+            <label >Select file:
+            <input type="file" name="file"></label>
+          </p>
+          
+          <p>
+            <input type="submit" value="Submit" />
+          </p>
+        </fieldset>
     </form>
+
+    <script type='text/javascript'>
+        window.ajaxSuccess = function () {
+        response = JSON.parse(this.responseText);
+        console.log("ajaxSuccess", typeof this.responseText);
+        
+        }
+        window.AJAXSubmit = function (formElement) {
+        console.log("starting AJAXSubmit");
+        if (!formElement.action) { return; }
+        var xhr = new XMLHttpRequest();
+        xhr.onload = ajaxSuccess;
+        xhr.open("post", "https://api.cloudinary.com/v1_1/aitrainer/video/upload");
+        xhr.send(new FormData(formElement));
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === 4){
+                if(xhr.status === 200 || xhr.status === 204){
+                    $.post( "{{ url_for('run_test') }}", {
+                    javascript_data: this.responseText
+                    }, function(response){
+                        console.log("Response from flask server: ",response);
+                        while(!response){
+                            // do stuff
+                            console.log("there was an error!");
+                            }
+                        window.location.href = "{{ url_for('show_results') }}";    
+                        }
+                    );
+                }
+            
+            }     
+                else{
+                    alert("Still Uploading...Please waits");
+                }
+        }   
+    }
+    </script>
 
 {% endblock %}
