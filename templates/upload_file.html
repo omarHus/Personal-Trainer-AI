@@ -32,7 +32,7 @@
         if (!formElement.action) { return; }
         var xhr = new XMLHttpRequest();
         xhr.onload = ajaxSuccess;
-        xhr.open("post", "https://api.cloudinary.com/v1_1/aitrainer/upload");
+        xhr.open("post", "https://api.cloudinary.com/v1_1/aitrainer/video/upload");
         xhr.send(new FormData(formElement));
         xhr.onreadystatechange = function() {
             if(xhr.readyState === 4){
