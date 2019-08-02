@@ -45,7 +45,6 @@ def run_test():
         #Make the images and test them against the model
         if response['secure_url']:
             newFrames = None
-            print("Response is ", response['secure_url'])
             while (newFrames is None):
                 newFrames  = tm2.makeFrames(response['secure_url']) #make image frames for predictions
                 test_data  = tm2.processImages(newFrames)

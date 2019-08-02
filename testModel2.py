@@ -28,14 +28,16 @@ def main():
 def makeFrames(videoFile):
     frames     = []
     cap        = cv2.VideoCapture(videoFile) #use opencv to capture video file
+    frameRate  = cap.get(5)
+    print("Frame rate is ", frameRate)
     rotateCode = check_rotation(videoFile) #check if video got rotated
-
+    print("CV2 information: ", cv2.getBuildInformation())
     while(cap.isOpened()):
         frameId = cap.get(1) #current frame number
         ret, frame = cap.read()
         if (ret != True):
             break
-        if (frameId % 8 == 0): #only take 1/8 of the frames captured
+        if (frameId % math.floor(frameRate) == 0): #only take 1/8 of the frames captured
             print("I'm making framessssssss!")
             if rotateCode is not None:
                 frame = correct_rotation(frame, rotateCode)
