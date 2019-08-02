@@ -43,11 +43,11 @@ def run_test():
         response = request.form['javascript_data']
         response =  json.loads(response)
         #Make the images and test them against the model
-        print("Response is ", response['secure_url'])
+        print("Response is ", response['public_id'])
         if response['secure_url']:
             newFrames = None
-            while (newFrames is None):
-                newFrames  = tm2.makeFrames(response['secure_url']) #make image frames for predictions
+            newFrames  = tm2.makeFrames(response['url']) #make image frames for predictions
+            if newFrames is not None:
                 test_data  = tm2.processImages(newFrames)
                 orig_image = test_data[3]
                 test_image = test_data[2]

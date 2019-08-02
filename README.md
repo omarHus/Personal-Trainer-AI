@@ -39,6 +39,8 @@
 - then open site with command line: heroku open
 
 ## To do:
-- Errors are occuring when opencv tries to read in frames from the videofile in the cloud server. Need to figure this out. In testModel2.py: makeFrames(videoFile), the line with cap.read() returns false for some reason.
+- Heroku Deployment Error: R14 - Memory quoate exceeded
+    - The web dyno (server process) on heroku gets overwhelmed by the file downloads we make.
+    - Start a worker dyno
 - Create postgres sql database to keep track of filenames and paths (integrate with Heroku)
 - Server side (flask app.py): authenticate clients and keep track of sessions so that we don't have people posting same video multiple times and one user trying to upload too many videos

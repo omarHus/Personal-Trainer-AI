@@ -19,6 +19,7 @@ import imageio
 import ffmpeg
 import os.path
 from os import path
+import cloudinary
 
 def main():
     makeFrames('fakefile.txt')
@@ -35,6 +36,7 @@ def makeFrames(videoFile):
         frameId = cap.get(1) #current frame number
         print("Frame Id = ", frameId)
         ret, frame = cap.read()
+        print("Return on cap is ", ret)
         if (ret != True):
             break
         if (frameId % math.floor(frameRate) == 0): #only take 1/8 of the frames captured
@@ -45,9 +47,29 @@ def makeFrames(videoFile):
     cap.release()
     return frames
 
+def makeFramesFromCloud(videoUrl):
+    frames = []
+    video_time = 0.0
+    while(True):
+        frame = None
+        # try:
+        frame = cloudinary.CloudinaryVideo(videoUrl).image(start_offset=video_time)
+        print("Frame url is: ",frame)
+        frame = imageio.imread(frame)
+        frames.append(frame)
+        print("frame type: ", type(frame))
+        video_time += 0.1
+        # except:
+            # print("Error in frame upload")
+            # break
+        print("Number of Frames: ", len(frames))
+        if len(frames) > 30:
+            break
+    return frames
+
 #Create Gif out of labeled output images to display on results.html page
 def videoOutput(frames, output_path):
-    imageio.mimsave(output_path, frames, duration=0.2)
+    imageio.mimsave(output_path, frames, duration=0.3)
     return output_path
 
 #Label frames based on predictions from model e.g. Good squat or bad squat
