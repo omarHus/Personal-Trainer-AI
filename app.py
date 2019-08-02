@@ -32,9 +32,11 @@ def upload_file():
     return render_template('/upload_file.html')
 
 # When file is uploaded this method runs, loads the trained model and makes predictions
+newFrames = None
 movie = None
 goodSquats = None
 badSquats = None
+resp = None
 @app.route('/run_test', methods=['GET', 'POST'])
 def run_test():
     #Handle user video file input
@@ -45,34 +47,41 @@ def run_test():
         #Make the images and test them against the model
         print("Response is ", response['public_id'])
         if response['secure_url']:
-            newFrames = None
+            global newFrames
             newFrames  = tm2.makeFrames(response['url']) #make image frames for predictions
             if newFrames is not None:
-                test_data  = tm2.processImages(newFrames)
-                orig_image = test_data[3]
-                test_image = test_data[2]
-                test_y     = test_data[1]
-                numTests   = test_data[0]
-
-                test_image = tm2.load_basemodel(test_image, numTests)
-                weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
-                model      = tm2.loadTrainedModel(weights_path)
-
-                global goodSquats, badSquats, movie
-                predictions = tm2.makepredictions(model, test_image)
-                goodSquats  = predictions[predictions==0].shape[0]
-                badSquats   = predictions[predictions==1].shape[0]
-                labeledImgs = tm2.createLabeledImages(orig_image, predictions)
-                movie       = tm2.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
                 data = {
-                    'goodSquats' : goodSquats,
-                    'badSquats'  : badSquats,
-                    'movie'      : movie
+                    'goodSquats' : "goodSquats",
+                    'badSquats'  : "badSquats",
+                    'movie'      : "movie"
                 }
+                global resp
                 resp = jsonify(data)
                 resp.status_code = 200
-                return resp
+                return redirect('/load_model')
     return render_template('/error.html')
+
+@app.route('/load_model')
+def load_model():
+    print("newFrames in load model is ", newFrames)
+    test_data  = tm2.processImages(newFrames)
+    orig_image = test_data[3]
+    test_image = test_data[2]
+    test_y     = test_data[1]
+    numTests   = test_data[0]
+
+    test_image = tm2.load_basemodel(test_image, numTests)
+    weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
+    model      = tm2.loadTrainedModel(weights_path)
+
+    global goodSquats, badSquats, movie
+    predictions = tm2.makepredictions(model, test_image)
+    goodSquats  = predictions[predictions==0].shape[0]
+    badSquats   = predictions[predictions==1].shape[0]
+    labeledImgs = tm2.createLabeledImages(orig_image, predictions)
+    movie       = tm2.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
+    return resp
+    return redirect('/show_results')
 
 @app.route('/show_results')
 def show_results():
