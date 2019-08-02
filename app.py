@@ -43,6 +43,7 @@ def run_test():
         response = request.form['javascript_data']
         response =  json.loads(response)
         #Make the images and test them against the model
+        print("Response is ", response['secure_url'])
         if response['secure_url']:
             newFrames = None
             while (newFrames is None):

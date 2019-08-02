@@ -31,9 +31,9 @@ def makeFrames(videoFile):
     frameRate  = cap.get(5)
     print("Frame rate is ", frameRate)
     rotateCode = check_rotation(videoFile) #check if video got rotated
-    print("CV2 information: ", cv2.getBuildInformation())
     while(cap.isOpened()):
         frameId = cap.get(1) #current frame number
+        print("Frame Id = ", frameId)
         ret, frame = cap.read()
         if (ret != True):
             break
