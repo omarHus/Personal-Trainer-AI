@@ -71,7 +71,7 @@ def load_model():
         test_y     = test_data[1]
         numTests   = test_data[0]
 
-        if weights_path == None:
+        if weights_path is None:
             base_model   = tm2.load_basemodel()
             weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
             model        = tm2.loadTrainedModel(weights_path)
