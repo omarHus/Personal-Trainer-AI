@@ -124,19 +124,13 @@ def processImages(frames):
     return num_of_frames, test_y, test_image, orig_images
 
 # extracting features from the images using pretrained model
-def load_basemodel(testImages, num_of_tests):
+def load_basemodel():
     #import vgg16 base model
     if (not os.environ.get('PYTHONHTTPSVERIFY', '') and 
         getattr(ssl, '_create_unverified_context', None)): 
         ssl._create_default_https_context = ssl._create_unverified_context
         base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-    testImages = base_model.predict(testImages)
-    # converting the images to 1-D form
-    testImages = testImages.reshape(num_of_tests, 7*7*512)
-
-    # zero centered images
-    testImages = testImages/testImages.max()
-    return testImages
+    return base_model
 
 def loadTrainedModel(modelName):
     #Load in Trained Model
