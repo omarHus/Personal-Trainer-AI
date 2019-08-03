@@ -50,16 +50,13 @@ def makeFramesFromCloud(videoUrl):
         frame = None
         # try:
         frame = cloudinary.CloudinaryVideo(videoUrl).image(start_offset=video_time)
-        print("Frame url is: ",frame)
         frame = imageio.imread(frame)
         frames.append(frame)
-        print("frame type: ", type(frame))
         video_time += 0.1
         # except:
             # print("Error in frame upload")
             # break
-        print("Number of Frames: ", len(frames))
-        if len(frames) > 30:
+        if len(frames) > 40:
             break
     return frames
 

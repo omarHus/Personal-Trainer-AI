@@ -29,6 +29,7 @@
 - vid2Frame_func.py  Methods for creating images from video files.
 
 ## Heroku
+- get heroku cli -> google heroku cli and follow the steps for either mac or windows
 - App is served at https://squatapp.herokuapp.com/
 - Provide me your email and I can add you as a collaborator on Heroku
 - from your local git repo you can push to heroku with: git push heroku master

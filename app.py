@@ -45,7 +45,6 @@ def run_test():
         response = request.form['javascript_data']
         response =  json.loads(response)
         #Make the images and test them against the model
-        print("Response is ", response['public_id'])
         if response['secure_url']:
             global newFrames
             newFrames  = tm2.makeFrames(response['url']) #make image frames for predictions
@@ -63,7 +62,7 @@ def run_test():
 
 @app.route('/load_model')
 def load_model():
-    print("newFrames in load model is ", newFrames)
+    global test_data, orig_image, test_image, model
     test_data  = tm2.processImages(newFrames)
     orig_image = test_data[3]
     test_image = test_data[2]
@@ -74,6 +73,10 @@ def load_model():
     weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
     model      = tm2.loadTrainedModel(weights_path)
 
+    return redirect('/test_model')
+
+@app.route('/test_model')
+def test_model():
     global goodSquats, badSquats, movie
     predictions = tm2.makepredictions(model, test_image)
     goodSquats  = predictions[predictions==0].shape[0]
@@ -81,11 +84,9 @@ def load_model():
     labeledImgs = tm2.createLabeledImages(orig_image, predictions)
     movie       = tm2.videoOutput(labeledImgs,os.path.join(static_dir,'movie.gif'))
     return resp
-    return redirect('/show_results')
 
 @app.route('/show_results')
 def show_results():
-    print("Global vars defined? : ", goodSquats, badSquats, movie)
     return render_template('results.html', goodSquats=goodSquats, badSquats=badSquats, movie=movie)
 
 if __name__ == '__main__':
