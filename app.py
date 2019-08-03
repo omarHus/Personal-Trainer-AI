@@ -64,22 +64,26 @@ def run_test():
 @app.route('/load_model')
 def load_model():
     global test_data, orig_image, test_image, model, weights_path, base_model
-    test_data  = tm2.processImages(newFrames)
-    orig_image = test_data[3]
-    test_image = test_data[2]
-    test_y     = test_data[1]
-    numTests   = test_data[0]
+    if newFrames is not None:
+        test_data  = tm2.processImages(newFrames)
+        orig_image = test_data[3]
+        test_image = test_data[2]
+        test_y     = test_data[1]
+        numTests   = test_data[0]
 
-    if weights_path == None:
-        base_model   = tm2.load_basemodel()
-        weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
-        model        = tm2.loadTrainedModel(weights_path)
+        if weights_path == None:
+            base_model   = tm2.load_basemodel()
+            weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
+            model        = tm2.loadTrainedModel(weights_path)
 
-    test_image = base_model.predict(test_image)
-    # converting the images to 1-D form
-    test_image = test_image.reshape(numTests, 7*7*512)
-    # zero centered images
-    test_image = test_image/test_image.max()
+        test_image = base_model.predict(test_image)
+        # converting the images to 1-D form
+        test_image = test_image.reshape(numTests, 7*7*512)
+        # zero centered images
+        test_image = test_image/test_image.max()
+    else:
+        return resp
+        return render_template('error.html')
     return redirect('/test_model')
 
 @app.route('/test_model')
