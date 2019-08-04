@@ -40,7 +40,6 @@
 - then open site with command line: heroku open
 
 ## To do:
-- link in results.html to revert to homepage to try again.
 - Heroku Deployment Error: R14 - Memory quoate exceeded
     - The web dyno (server process) on heroku gets overwhelmed by the file downloads we make.
     - Start a worker dyno

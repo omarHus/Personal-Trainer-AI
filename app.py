@@ -96,12 +96,10 @@ def test_model():
     badSquats   = predictions[predictions==1].shape[0]
     labeledImgs = tm2.createLabeledImages(orig_image, predictions)
     movie       = tm2.videoOutput(labeledImgs,os.path.join(uploads_dir,movieName))
-    print("Movie Name at end is ", movieName)
     return resp
 
 @app.route('/show_results')
 def show_results():
-    global movieName
     return render_template('results.html', goodSquats=goodSquats, badSquats=badSquats, filename=movieName)
 
 @app.route('/uploads/<filename>')
@@ -124,7 +122,6 @@ def reset():
     except:
         print("no file exists")
 
-    print("Is the file still there? ", os.path.isfile(os.path.join(uploads_dir, movieName)))
     return redirect('/')
     
 
