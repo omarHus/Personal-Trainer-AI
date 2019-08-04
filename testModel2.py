@@ -62,7 +62,7 @@ def makeFramesFromCloud(videoUrl):
 
 #Create Gif out of labeled output images to display on results.html page
 def videoOutput(frames, output_path):
-    imageio.mimsave(output_path, frames, duration=0.3)
+    imageio.mimsave(output_path, frames, duration=0.4)
     return output_path
 
 #Label frames based on predictions from model e.g. Good squat or bad squat
@@ -143,8 +143,8 @@ def loadTrainedModel(modelName):
     return loaded_model
 
 def makepredictions(modelName, testCases):
-    predictions = modelName.predict_classes(testCases)
-    return predictions
+    myPredictions = modelName.predict_classes(testCases)
+    return myPredictions
 
 #Checking to see if video file got rotated
 def check_rotation(path_video_file):

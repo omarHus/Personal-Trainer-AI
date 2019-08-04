@@ -25,9 +25,9 @@
         window.ajaxSuccess = function () {
         response = JSON.parse(this.responseText);
         console.log("ajaxSuccess", typeof this.responseText);
-        
         }
         window.AJAXSubmit = function (formElement) {
+        document.getElementById('progress').innerHTML = "Uploading file..."
         console.log("starting AJAXSubmit");
         if (!formElement.action) { return; }
         var xhr = new XMLHttpRequest();
@@ -54,7 +54,7 @@
                 else{
                     console.log("Error!");
                     var elem = document.getElementById("progress");
-                    elem.innerHTML = "Upload in progress"
+                    elem.innerHTML = "Evaluating your squat form..."
                 }
         }   
     }
