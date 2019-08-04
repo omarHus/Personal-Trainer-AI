@@ -40,6 +40,7 @@
 - then open site with command line: heroku open
 
 ## To do:
+- Flask sessions: this will allow us to release memory
 - Heroku Deployment Error: R14 - Memory quoate exceeded
     - The web dyno (server process) on heroku gets overwhelmed by the file downloads we make.
     - Start a worker dyno

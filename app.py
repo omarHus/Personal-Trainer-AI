@@ -59,7 +59,7 @@ def run_test():
 
 @app.route('/load_model')
 def load_model():
-    global test_data, orig_image, test_image, model, weights_path, base_model
+    global test_data, orig_image, test_image, model, weights_path, base_model, newFrames
     if newFrames is not None:
         test_data  = tm2.processImages(newFrames)
         orig_image = test_data[3]
@@ -97,7 +97,7 @@ def test_model():
 
 @app.route('/show_results')
 def show_results():
-    global movieName
+    global movieName, goodSquats, badSquats
     filename = ""
     filename = movieName
     print("MovieName in show_results is ", movieName)
