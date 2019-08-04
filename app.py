@@ -90,7 +90,7 @@ def load_model():
 
 @app.route('/test_model')
 def test_model():
-    global goodSquats, badSquats, movieName
+    global goodSquats, badSquats, movieName, movie
     predictions = tm2.makepredictions(model, test_image)
     goodSquats  = predictions[predictions==0].shape[0]
     badSquats   = predictions[predictions==1].shape[0]
@@ -100,7 +100,12 @@ def test_model():
 
 @app.route('/show_results')
 def show_results():
-    return render_template('results.html', goodSquats=goodSquats, badSquats=badSquats, filename=movieName)
+    global movieName, goodSquats, badSquats
+    print("Movie is ", movie)
+    filename = ""
+    filename = movieName
+    print("filename is ", filename)
+    return render_template('results.html', goodSquats=goodSquats, badSquats=badSquats, filename=filename)
 
 @app.route('/uploads/<filename>')
 def send_file(filename):
