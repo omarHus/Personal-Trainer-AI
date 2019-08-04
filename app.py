@@ -101,6 +101,7 @@ def test_model():
 
 @app.route('/show_results')
 def show_results():
+    global movieName
     return render_template('results.html', goodSquats=goodSquats, badSquats=badSquats, filename=movieName)
 
 @app.route('/uploads/<filename>')
@@ -122,7 +123,9 @@ def reset():
         os.remove(os.path.join(uploads_dir, movieName))
     except:
         print("no file exists")
-    return redirect(url_for('index'))
+
+    print("Is the file still there? ", os.path.isfile(os.path.join(uploads_dir, movieName)))
+    return redirect('/')
     
 
 if __name__ == '__main__':

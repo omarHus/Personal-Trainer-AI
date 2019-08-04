@@ -4,5 +4,5 @@
     <h3>Number of Good Squat Frames = {{ goodSquats }}</h3>
     <h3>Number of bad Squat Frames = {{ badSquats }}</h3>
     <img src="{{ url_for('send_file', filename=filename) }}" width="25%">
-    <h2><a href="{{ url_for('index') }}">Back to Homepage!</a></h2>
+    <h2><a href="{{ url_for('reset') }}">Back to Homepage!</a></h2>
 {% endblock %}
