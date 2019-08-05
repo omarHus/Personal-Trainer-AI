@@ -54,7 +54,6 @@ def run_test():
                 resp = jsonify(data)
                 resp.status_code = 200
                 return resp
-                return redirect('/load_model')
         else:
             data = {
                 'goodSquats' : "error"
@@ -64,10 +63,10 @@ def run_test():
             return resp
     return render_template('/error.html')
 
-@app.route('/load_model', methods=['POST'])
+@app.route('/load_model', methods=['GET','POST'])
 def load_model():
+    global test_data, orig_image, test_image, model, weights_path, base_model, newFrames
     if request.method == 'POST':
-        global test_data, orig_image, test_image, model, weights_path, base_model, newFrames
         if newFrames is not None:
             test_data  = tm2.processImages(newFrames)
             orig_image = test_data[3]
@@ -98,10 +97,10 @@ def load_model():
         return render_template('error.html')
     # return redirect('/test_model')
 
-@app.route('/test_model', methods=['POST'])
+@app.route('/test_model', methods=['GET','POST'])
 def test_model():
+    global goodSquats, badSquats, movieName, movie
     if request.method == 'POST':
-        global goodSquats, badSquats, movieName, movie
         print("MovieName in test_model is ", movieName)
         predictions = tm2.makepredictions(model, test_image)
         goodSquats  = predictions[predictions==0].shape[0]
