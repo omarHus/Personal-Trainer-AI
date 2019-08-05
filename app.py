@@ -21,7 +21,6 @@ cloud.config(
   api_secret = os.environ['CLOUDINARY_API_SECRET'],
 ) # This data is stored in config vars on heroku
 
-weights_path = None
 #Homepage of website
 @app.route('/')
 def index():
@@ -74,7 +73,9 @@ def load_model():
             test_y     = test_data[1]
             numTests   = test_data[0]
 
-            if weights_path is None:
+            try:
+                weights_path
+            except:
                 print("I am loading the models")
                 base_model   = tm2.load_basemodel()
                 weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
