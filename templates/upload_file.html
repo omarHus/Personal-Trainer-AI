@@ -43,9 +43,34 @@
                         console.log("Response from flask server: ",response);
                         while(!response){
                             // do stuff
-                            console.log("there was an error!");
+                           console.log("there was an error!");
                             }
-                        window.location.href = "{{ url_for('show_results') }}";    
+                            $.ajax({
+                                type : "POST",
+                                url : '/load_model',
+                                dataType: "json",
+                                data: JSON.stringify("request"),
+                                contentType: 'application/json;charset=UTF-8',
+                                success: function (data) {
+                                    console.log(data);
+                                    $.ajax({
+                                        type : "POST",
+                                        url : '/test_model',
+                                        dataType: "json",
+                                        data: JSON.stringify(""),
+                                        contentType: 'application/json;charset=UTF-8',
+                                        success: function (data) {
+                                            console.log(data);
+                                            window.location.href = "{{ url_for('show_results') }}";
+                                            }
+                                        });
+                                    
+                                    
+                                    }
+                                });
+                        // console.log(response)
+                        // console.log("Response text is ", response.responseText)
+                        // window.location.href = "{{ url_for('show_results') }}";    
                         }
                     );
                 }

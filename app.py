@@ -34,7 +34,7 @@ def upload_file():
 # When file is uploaded this method runs, loads the trained model and makes predictions
 @app.route('/run_test', methods=['GET', 'POST'])
 def run_test():
-    global newFrames, movieName
+    global newFrames, movieName, resp
     #Handle user video file input
     if request.method == 'POST':
         # Get json text showing that file has been uploaded directly to cloudinary successfully
@@ -51,49 +51,71 @@ def run_test():
                     'badSquats'  : "badSquats",
                     'movie'      : "movie"
                 }
-                global resp
                 resp = jsonify(data)
                 resp.status_code = 200
+                return resp
                 return redirect('/load_model')
+        else:
+            data = {
+                'goodSquats' : "error"
+            }
+            resp = jsonify(data)
+            resp.status_code = 500
+            return resp
     return render_template('/error.html')
 
-@app.route('/load_model')
+@app.route('/load_model', methods=['POST'])
 def load_model():
-    global test_data, orig_image, test_image, model, weights_path, base_model, newFrames
-    if newFrames is not None:
-        test_data  = tm2.processImages(newFrames)
-        orig_image = test_data[3]
-        test_image = test_data[2]
-        test_y     = test_data[1]
-        numTests   = test_data[0]
+    if request.method == 'POST':
+        global test_data, orig_image, test_image, model, weights_path, base_model, newFrames
+        if newFrames is not None:
+            test_data  = tm2.processImages(newFrames)
+            orig_image = test_data[3]
+            test_image = test_data[2]
+            test_y     = test_data[1]
+            numTests   = test_data[0]
 
-        if weights_path is None:
-            print("I am loading the models")
-            base_model   = tm2.load_basemodel()
-            weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
-            model        = tm2.loadTrainedModel(weights_path)
-            model._make_predict_function()
+            if weights_path is None:
+                print("I am loading the models")
+                base_model   = tm2.load_basemodel()
+                weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
+                model        = tm2.loadTrainedModel(weights_path)
+                model._make_predict_function()
 
-        test_image = base_model.predict(test_image)
-        # converting the images to 1-D form
-        test_image = test_image.reshape(numTests, 7*7*512)
-        # zero centered images
-        test_image = test_image/test_image.max()
+            test_image = base_model.predict(test_image)
+            # converting the images to 1-D form
+            test_image = test_image.reshape(numTests, 7*7*512)
+            # zero centered images
+            test_image = test_image/test_image.max()
+            data = {
+                "whatever" : "whatever"
+            }
+            resp = jsonify(data)
+            return resp
+        else:
+            return render_template('error.html')
     else:
-        return resp
         return render_template('error.html')
-    return redirect('/test_model')
+    # return redirect('/test_model')
 
-@app.route('/test_model')
+@app.route('/test_model', methods=['POST'])
 def test_model():
-    global goodSquats, badSquats, movieName, movie
-    print("MovieName in test_model is ", movieName)
-    predictions = tm2.makepredictions(model, test_image)
-    goodSquats  = predictions[predictions==0].shape[0]
-    badSquats   = predictions[predictions==1].shape[0]
-    labeledImgs = tm2.createLabeledImages(orig_image, predictions)
-    movie       = tm2.videoOutput(labeledImgs,os.path.join(uploads_dir,movieName))
-    return resp
+    if request.method == 'POST':
+        global goodSquats, badSquats, movieName, movie
+        print("MovieName in test_model is ", movieName)
+        predictions = tm2.makepredictions(model, test_image)
+        goodSquats  = predictions[predictions==0].shape[0]
+        badSquats   = predictions[predictions==1].shape[0]
+        labeledImgs = tm2.createLabeledImages(orig_image, predictions)
+        movie       = tm2.videoOutput(labeledImgs,os.path.join(uploads_dir,movieName))
+        data = {
+            "whatever" : "whatever"
+        }
+        resp = jsonify(data)
+        return resp
+    else:
+        return render_template('error.html')
+    # return redirect('/show_results')
 
 @app.route('/show_results')
 def show_results():
@@ -124,7 +146,3 @@ def reset():
         print("no file exists")
 
     return redirect('/')
-    
-
-if __name__ == '__main__':
-    app.run(debug=True)
