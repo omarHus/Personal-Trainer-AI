@@ -89,8 +89,7 @@ def run_test():
 def load_model():
     global  base_model, numTests, test_image
     if request.method == 'POST':
-        print(test_image.shape)
-        print(type(test_image))
+        global test_image
         test_image = base_model.predict(test_image)
         # converting the images to 1-D form
         test_image = test_image.reshape(numTests, 7*7*512)
