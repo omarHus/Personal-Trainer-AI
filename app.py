@@ -17,6 +17,13 @@ base_model._make_predict_function()
 weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
 model        = tm2.loadTrainedModel(weights_path)
 model._make_predict_function()
+test_image = None
+newFrames = None
+orig_image = None
+movie      = None
+goodSquats = None
+badSquats  = None
+resp       = None
 
 
 # Cloud server setup
