@@ -3,12 +3,21 @@ from werkzeug import secure_filename
 from keras.utils.data_utils import get_file
 import testModel2 as tm2
 import os
+import numpy as np
 import json
 
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 app.config['uploads_dir'] = uploads_dir
+
+global base_model, weights_path, model
+base_model   = tm2.load_basemodel()
+base_model._make_predict_function()
+weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
+model        = tm2.loadTrainedModel(weights_path)
+model._make_predict_function()
+
 
 # Cloud server setup
 import cloudinary as cloud
@@ -33,7 +42,7 @@ def upload_file():
 # When file is uploaded this method runs, loads the trained model and makes predictions
 @app.route('/run_test', methods=['GET', 'POST'])
 def run_test():
-    global newFrames, movieName, resp
+    global movieName, resp, newFrames
     #Handle user video file input
     if request.method == 'POST':
         # Get json text showing that file has been uploaded directly to cloudinary successfully
@@ -43,13 +52,15 @@ def run_test():
         if response['secure_url']:
             movieName = response['public_id'] + ".gif"
             print("Movie name is ", movieName)
-            newFrames  = tm2.makeFrames(response['url']) #make image frames for predictions
+            newFrames = tm2.makeFrames(response['url'])
+             #make image frames for predictions
             if newFrames is not None:
                 data = {
                     'goodSquats' : "goodSquats",
                     'badSquats'  : "badSquats",
                     'movie'      : "movie"
                 }
+                
                 resp = jsonify(data)
                 resp.status_code = 200
                 return resp
@@ -64,39 +75,24 @@ def run_test():
 
 @app.route('/load_model', methods=['GET','POST'])
 def load_model():
-    global test_data, orig_image, test_image, model, weights_path, base_model, newFrames
+    global  model, weights_path, base_model, newFrames, numTests, test_image, orig_image
     if request.method == 'POST':
-        if newFrames is not None:
-            test_data  = tm2.processImages(newFrames)
-            orig_image = test_data[3]
-            test_image = test_data[2]
-            test_y     = test_data[1]
-            numTests   = test_data[0]
-
-            try:
-                weights_path
-            except:
-                print("I am loading the models")
-                base_model   = tm2.load_basemodel()
-                weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
-                model        = tm2.loadTrainedModel(weights_path)
-                model._make_predict_function()
-
-            test_image = base_model.predict(test_image)
-            # converting the images to 1-D form
-            test_image = test_image.reshape(numTests, 7*7*512)
-            # zero centered images
-            test_image = test_image/test_image.max()
-            data = {
-                "whatever" : "whatever"
-            }
-            resp = jsonify(data)
-            return resp
-        else:
-            return render_template('error.html')
+        test_data  = tm2.processImages(newFrames)
+        orig_image = test_data[3]
+        test_image = test_data[2]
+        numTests   = test_data[0]
+        test_image = base_model.predict(test_image)
+        # converting the images to 1-D form
+        test_image = test_image.reshape(numTests, 7*7*512)
+        # zero centered images
+        test_image = test_image/test_image.max()
+        data = {
+            "whatever" : "whatever"
+        }
+        resp = jsonify(data)
+        return resp
     else:
         return render_template('error.html')
-    # return redirect('/test_model')
 
 @app.route('/test_model', methods=['GET','POST'])
 def test_model():
@@ -115,7 +111,6 @@ def test_model():
         return resp
     else:
         return render_template('error.html')
-    # return redirect('/show_results')
 
 @app.route('/show_results')
 def show_results():
@@ -146,3 +141,7 @@ def reset():
         print("no file exists")
 
     return redirect('/')
+
+app.jinja_env.cache = {}
+if __name__ == '__main__':
+   app.run()

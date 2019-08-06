@@ -5,3 +5,4 @@ newImports.csv
 trained_model.h5
 Training
 videos
+config.py
