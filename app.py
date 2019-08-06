@@ -42,7 +42,7 @@ def upload_file():
 # When file is uploaded this method runs, loads the trained model and makes predictions
 @app.route('/run_test', methods=['GET', 'POST'])
 def run_test():
-    global movieName, resp, newFrames
+    global movieName, resp, newFrames, orig_image, test_image, numTests
     #Handle user video file input
     if request.method == 'POST':
         # Get json text showing that file has been uploaded directly to cloudinary successfully
@@ -54,7 +54,12 @@ def run_test():
             print("Movie name is ", movieName)
             newFrames = tm2.makeFrames(response['url'])
              #make image frames for predictions
-            if newFrames is not None:
+            try:
+                newFrames
+                test_data  = tm2.processImages(newFrames)
+                orig_image = test_data[3]
+                test_image = test_data[2]
+                numTests   = test_data[0]
                 data = {
                     'goodSquats' : "goodSquats",
                     'badSquats'  : "badSquats",
@@ -64,6 +69,8 @@ def run_test():
                 resp = jsonify(data)
                 resp.status_code = 200
                 return resp
+            except:
+                return render_template('/error.html')
         else:
             data = {
                 'goodSquats' : "error"
@@ -77,10 +84,6 @@ def run_test():
 def load_model():
     global  model, weights_path, base_model, newFrames, numTests, test_image, orig_image
     if request.method == 'POST':
-        test_data  = tm2.processImages(newFrames)
-        orig_image = test_data[3]
-        test_image = test_data[2]
-        numTests   = test_data[0]
         test_image = base_model.predict(test_image)
         # converting the images to 1-D form
         test_image = test_image.reshape(numTests, 7*7*512)
