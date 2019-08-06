@@ -82,9 +82,10 @@ def run_test():
 
 @app.route('/load_model', methods=['GET','POST'])
 def load_model():
-    global  model, weights_path, base_model, newFrames, numTests, test_image, orig_image
+    global  base_model, numTests, test_image
     if request.method == 'POST':
         test_image = base_model.predict(test_image)
+        print("Prediction complete")
         # converting the images to 1-D form
         test_image = test_image.reshape(numTests, 7*7*512)
         # zero centered images
@@ -99,7 +100,7 @@ def load_model():
 
 @app.route('/test_model', methods=['GET','POST'])
 def test_model():
-    global goodSquats, badSquats, movieName, movie
+    global goodSquats, badSquats, movieName, movie, orig_image, test_image, model
     if request.method == 'POST':
         print("MovieName in test_model is ", movieName)
         predictions = tm2.makepredictions(model, test_image)
