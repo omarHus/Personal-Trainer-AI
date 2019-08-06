@@ -13,10 +13,8 @@ app.config['uploads_dir'] = uploads_dir
 
 global base_model, weights_path, model
 base_model   = tm2.load_basemodel()
-base_model._make_predict_function()
 weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
 model        = tm2.loadTrainedModel(weights_path)
-model._make_predict_function()
 test_image = None
 newFrames = None
 orig_image = None
@@ -91,8 +89,9 @@ def run_test():
 def load_model():
     global  base_model, numTests, test_image
     if request.method == 'POST':
+        print(test_image.shape)
+        print(type(test_image))
         test_image = base_model.predict(test_image)
-        print("Prediction complete")
         # converting the images to 1-D form
         test_image = test_image.reshape(numTests, 7*7*512)
         # zero centered images

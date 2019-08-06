@@ -130,6 +130,7 @@ def load_basemodel():
         getattr(ssl, '_create_unverified_context', None)): 
         ssl._create_default_https_context = ssl._create_unverified_context
         base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+        base_model._make_predict_function()
     return base_model
 
 def loadTrainedModel(modelName):
@@ -140,6 +141,7 @@ def loadTrainedModel(modelName):
     loaded_model.add(Dense(2, activation='softmax'))    # output layer
     loaded_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     loaded_model.load_weights(modelName)
+    loaded_model._make_predict_function()
     return loaded_model
 
 def makepredictions(modelName, testCases):
