@@ -40,9 +40,7 @@
 - then open site with command line: heroku open
 
 ## To do:
-- Flask sessions: this will allow us to release memory
-- Heroku Deployment Error: R14 - Memory quoate exceeded
-    - The web dyno (server process) on heroku gets overwhelmed by the file downloads we make.
-    - Start a worker dyno
-- Create postgres sql database to keep track of filenames and paths (integrate with Heroku)
-- Server side (flask app.py): authenticate clients and keep track of sessions so that we don't have people posting same video multiple times and one user trying to upload too many videos
+- Fix Error in Heroku Deployment:
+    - server timeout during app.route('/load_model)
+    - the long function is base_model.predict(test_image)
+    - need a way to ensure that this function doesn't lead to a server timeout
