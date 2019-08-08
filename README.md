@@ -40,7 +40,6 @@
 - then open site with command line: heroku open
 
 ## To do:
-- Fix Error in Heroku Deployment:
-    - server timeout during app.route('/load_model)
-    - the long function is base_model.predict(test_image)
-    - need a way to ensure that this function doesn't lead to a server timeout
+- Fix Errors in Heroku Deployment:
+    1. server timeout during app.route('/load_model). i.e. The function takes too long to load the base_model
+    2. server RAM memory overload. Heroku provides 500 MB RAM for free acounts, our flask app uses 600MB every time it runs.

@@ -61,10 +61,7 @@ def run_test():
         try:
             newFrames
             numTests = len(newFrames)
-            test_data  = tm2.processImages(newFrames)
-            orig_image = test_data[3]
-            test_image = test_data[2]
-            numTests   = test_data[0]
+            test_image  = tm2.processImages(newFrames)
             data = {
                 'goodSquats' : "goodSquats",
                 'badSquats'  : "badSquats",
@@ -72,11 +69,12 @@ def run_test():
             }
             # load model only once
             try:
-                weights_path
+                model
             except:
                 base_model   = tm2.load_basemodel()
                 weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
                 model        = tm2.loadTrainedModel(weights_path)
+                weights_path = None
             
             #send json response back to javascript function
             resp = jsonify(data)
@@ -115,12 +113,12 @@ def load_model():
 @app.route('/test_model', methods=['POST'])
 def test_model():
     #Make predictions on the new images and make a gif
-    global goodSquats, badSquats, movieName, movie, test_image, model, orig_image
+    global goodSquats, badSquats, movieName, movie, test_image, model, newFrames
     print("MovieName in test_model is ", movieName)
     predictions = tm2.makepredictions(model, test_image)
     goodSquats  = predictions[predictions==0].shape[0]
     badSquats   = predictions[predictions==1].shape[0]
-    labeledImgs = tm2.createLabeledImages(orig_image, predictions)
+    labeledImgs = tm2.createLabeledImages(newFrames, predictions)
     movie       = tm2.videoOutput(labeledImgs,os.path.join(uploads_dir,movieName))
     data = {
         "status" : "200 OK"
@@ -150,7 +148,6 @@ def reset():
     badSquats  = None
     resp       = None
     test_image = None
-    orig_image = None
 
     try:
         os.remove(os.path.join(uploads_dir, movieName))

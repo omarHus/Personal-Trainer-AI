@@ -2,7 +2,6 @@
 
 import cv2
 import math
-import matplotlib.pyplot as plt
 import pandas as pd
 from keras.preprocessing import image
 import numpy as np
@@ -10,7 +9,6 @@ from keras.utils import np_utils
 from keras.utils.data_utils import get_file
 from skimage.transform import resize
 from keras.applications.vgg16 import preprocess_input
-from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.applications.vgg16 import VGG16
 from keras.layers import Dense, InputLayer, Dropout
@@ -19,7 +17,6 @@ import imageio
 import ffmpeg
 import os.path
 from os import path
-import cloudinary
 
 def main():
     makeFrames('fakefile.txt')
@@ -41,23 +38,6 @@ def makeFrames(videoFile):
                 frame = correct_rotation(frame, rotateCode)
             frames.append(frame)
     cap.release()
-    return frames
-
-def makeFramesFromCloud(videoUrl):
-    frames = []
-    video_time = 0.0
-    while(True):
-        frame = None
-        # try:
-        frame = cloudinary.CloudinaryVideo(videoUrl).image(start_offset=video_time)
-        frame = imageio.imread(frame)
-        frames.append(frame)
-        video_time += 0.1
-        # except:
-            # print("Error in frame upload")
-            # break
-        if len(frames) > 40:
-            break
     return frames
 
 #Create Gif out of labeled output images to display on results.html page
@@ -121,7 +101,7 @@ def processImages(frames):
     # preprocessing the images
     test_image = preprocess_input(test_image, mode='tf')
 
-    return num_of_frames, test_y, test_image, orig_images
+    return test_image
 
 # extracting features from the images using pretrained model
 def load_basemodel():
