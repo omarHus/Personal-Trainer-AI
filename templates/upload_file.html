@@ -27,7 +27,11 @@
         console.log("ajaxSuccess", typeof this.responseText);
         }
         window.AJAXSubmit = function (formElement) {
-        document.getElementById('progress').innerHTML = "Uploading file..."
+        var progressElem = document.getElementById("progress");
+        progressElem.innerText = "Uploading file...";
+        var newElem = document.createElement('div');
+        newElem.className = "loader";
+        progressElem.appendChild(newElem)
         console.log("starting AJAXSubmit");
         if (!formElement.action) { return; }
         var xhr = new XMLHttpRequest();
@@ -67,19 +71,15 @@
                                     
                                     
                                     }
-                                });
-                        // console.log(response)
-                        // console.log("Response text is ", response.responseText)
-                        // window.location.href = "{{ url_for('show_results') }}";    
+                                }); 
                         }
                         );
                 }
             
             }     
                 else{
-                    console.log("Error!");
-                    var elem = document.getElementById("progress");
-                    elem.innerHTML = "Video uploaded successfully. Evaluating your squat form..."
+                    progressElem.innerText = "Video uploaded successfully. Evaluating your squat form..."
+                    progressElem.appendChild(newElem)
                 }
         }   
     }
