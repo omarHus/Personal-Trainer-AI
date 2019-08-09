@@ -19,9 +19,9 @@
         export CLOUDINARY_API_SECRET="****************" 
 
 ## How to Run on Local Host
-- Go to local directory. From command line: python3 app.py
+- command line: redis-server
+- command line: flask run
 - Copy the url: http://127.0.0.1:5000/ and paste in a browser
-- or command line: flask run
 
 ## Development
 - app.py:            Flask app deployed on Heroku.

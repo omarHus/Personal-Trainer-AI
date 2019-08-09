@@ -22,10 +22,12 @@
     </form>
 
     <script type='text/javascript'>
+
         window.ajaxSuccess = function () {
         response = JSON.parse(this.responseText);
         console.log("ajaxSuccess", typeof this.responseText);
         }
+
         window.AJAXSubmit = function (formElement) {
         var progressElem = document.getElementById("progress");
         progressElem.innerText = "Uploading file...";
@@ -41,24 +43,59 @@
         xhr.onreadystatechange = function() {
             if(xhr.readyState === 4){
                 if(xhr.status === 200 || xhr.status === 204){
-                    $.post( "{{ url_for('run_test') }}", {
-                    javascript_data: this.responseText
-                    }, function(response){
-                        console.log("Response from flask server: ",response);
-                        while(!response){
-                            // do stuff
-                           console.log("there was an error!");
+                    var responseData = this.responseText
+                    $.ajax({
+                        type: 'POST',
+                        url: '/run_test',
+                        data: responseData,
+                        contentType: 'application/json',
+                        success: function(data, status, request) {
+                            status_url = request.getResponseHeader('Location');
+                            update_progress(status_url, progressElem, newElem);
+                        },
+                        error: function() {
+                            alert('Unexpected error');
                         }
+                    });
 
-                        });
                 }
             }     
                 else{
-                    progressElem.innerText = "Video uploaded successfully. Evaluating your squat form..."
-                    progressElem.appendChild(newElem)
+                    progressElem.innerText = "Video uploaded successfully. Evaluating your squat form...";
+                    progressElem.appendChild(newElem);
                 }
         }   
     }
+
+    function update_progress(status_url, element, loader_element) {
+        // send GET request to status URL
+        $.getJSON(status_url, function(data) {
+            // update UI
+            element.innerText = data['state'];
+            // element.appendChild(loader_element);
+            if (data['state'] == 'SUCCESS') {
+                if ('result' in data) {
+                    // show result
+                    element.innerText = "Here are the results of your squat evaluation!";
+                    imgElem = document.createElement("img");
+                    console.log(data['result']);
+                    imgElem.src = "static/images/uploads" + data['result'];
+                    element.appendChild(imgElem);
+                }
+                else {
+                    // something unexpected happened
+                    element.innerText = 'Result: ' + data['state'];
+                }
+            }
+            else {
+                // rerun in 1 second
+                setTimeout(function() {
+                    update_progress(status_url, element);
+                }, 1000);
+            }
+        });
+    }
+
     </script>
 
 {% endblock %}

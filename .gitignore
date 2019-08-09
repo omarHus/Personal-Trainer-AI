@@ -6,3 +6,5 @@ trained_model.h5
 Training
 videos
 config.py
+dump.rdb
+static/images/uploads

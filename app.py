@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, jsonify, Response, send_from_directory
+from flask import Flask, render_template, request, redirect, jsonify, Response, send_from_directory, url_for
+from celery.result import AsyncResult
 from keras.utils.data_utils import get_file
 import testModel2 as tm2
 import os
@@ -41,23 +42,57 @@ def upload_file():
 def run_test():
     global base_model, model
     # Get json text showing that file has been uploaded directly to cloudinary successfully
-    response = request.form['javascript_data']
-    response =  json.loads(response)
+    response = request.get_json()
     #Make the images and test them against the model
-    try:
-        fileSource  = response['url']
-        fileName    = response['public_id'] + ".gif"
-        output_path = os.path.join(uploads_dir,fileName)
+    # try:
+    fileSource  = response['url']
+    fileID      = response['public_id']
 
-        base_model_json = base_model.to_json()
-        model_json      = model.to_json()
-        movie = evaluateSquat.delay(fileSource, base_model_json, model_json, output_path)
-        data = { "status": "200 OK" , "movie" : movie}
-    except:
-        print("Error uploading file")
-        data = { "status" : "Error"}
-    return jsonify(data)
+    fileName    = fileID + ".gif"
+    output_path = os.path.join('static/images',fileName)
 
+    base_model_json = base_model.to_json()
+    model_json      = model.to_json()
+    myPredictions = evaluateSquat.delay(fileSource, base_model_json, model_json, output_path, fileName)
+    return jsonify({}), 202, {'Location': url_for('task_status', task_id=myPredictions.id)}
+    # except:
+    #     print("Error uploading file")
+    #     data = { "status" : "Error"}
+    #     return jsonify(data)
+
+@app.route('/task_status/<task_id>')
+def task_status(task_id):
+    myTask = evaluateSquat.AsyncResult(task_id)
+    if myTask.state == 'PENDING':
+        # job did not start yet
+        response = {
+            'state': myTask.state,
+        }
+    elif myTask.state != 'FAILURE':
+        response = {
+            'state': myTask.state,
+        }
+        if 'result' in myTask.info:
+            response['result'] = myTask.info['result']
+            print("The result is ", response['result'])
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': myTask.state,
+            'status': str(myTask.info),  # this is the exception raised
+        }
+    return jsonify(response)
+
+@app.route('/reset')
+def reset():
+    for file in os.listdir(uploads_dir):
+        file_path = os.path.join(uploads_dir,file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(e)
+    return redirect('/')
 
 app.jinja_env.cache = {}
 if __name__ == '__main__':
