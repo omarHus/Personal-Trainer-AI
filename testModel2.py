@@ -40,26 +40,6 @@ def makeFrames(videoFile):
     cap.release()
     return frames
 
-#Create Gif out of labeled output images to display on results.html page
-def videoOutput(frames, output_path):
-    imageio.mimsave(output_path, frames, duration=0.4)
-    return output_path
-
-#Label frames based on predictions from model e.g. Good squat or bad squat
-def createLabeledImages(orig_images, labels):
-    font  = cv2.FONT_HERSHEY_SIMPLEX
-    count = 0
-    for img in orig_images:
-        if labels[count] == 0: #good squat
-            color = (0,255,0) #green
-        else:
-            color = (255,0,0) #red
-        cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 5, color) #classMap is a function i wrote to map integer of prediction to string like "Good"
-        count += 1
-    cv2.destroyAllWindows()
-    
-    return orig_images
-
 # Load in Test Images and PreProcess if we are using csv files (not used on heroku app)
 def loadInTestImages(filename):
     test = pd.read_csv(filename)
@@ -113,6 +93,15 @@ def load_basemodel():
         base_model._make_predict_function()
     return base_model
 
+def classifyImages(frames, base_model):
+    num_of_frames = len(frames)
+    frames = base_model.predict(frames, batch_size=num_of_frames)
+    # # converting the images to 1-D form
+    frames = frames.reshape(num_of_frames, 7*7*512)
+    # # zero centered images
+    frames = frames/frames.max()
+    return frames
+
 def loadTrainedModel(modelName):
     #Load in Trained Model
     loaded_model = Sequential()
@@ -124,9 +113,28 @@ def loadTrainedModel(modelName):
     loaded_model._make_predict_function()
     return loaded_model
 
-def makepredictions(modelName, testCases):
+def makepredictions(testCases, modelName):
     myPredictions = modelName.predict_classes(testCases)
     return myPredictions
+
+#Label frames based on predictions from model e.g. Good squat or bad squat
+def createLabeledImages(orig_images, labels):
+    font  = cv2.FONT_HERSHEY_SIMPLEX
+    count = 0
+    for img in orig_images:
+        if labels[count] == 0: #good squat
+            color = (0,255,0) #green
+        else:
+            color = (255,0,0) #red
+        cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 5, color) #classMap is a function i wrote to map integer of prediction to string like "Good"
+        count += 1
+    cv2.destroyAllWindows()
+    return orig_images
+
+    #Create Gif out of labeled output images to display on results.html page
+def videoOutput(frames, output_path):
+    imageio.mimsave(output_path, frames, duration=0.4)
+    return output_path
 
 #Checking to see if video file got rotated
 def check_rotation(path_video_file):
@@ -147,7 +155,7 @@ def check_rotation(path_video_file):
         rotateCode = None
     
     return rotateCode
-
+   
 def correct_rotation(frame, rotateCode):  
     return cv2.rotate(frame, rotateCode) 
 

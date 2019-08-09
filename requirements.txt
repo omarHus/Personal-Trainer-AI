@@ -11,3 +11,5 @@ wtforms
 ffmpeg-python
 gunicorn
 cloudinary
+celery
+redis

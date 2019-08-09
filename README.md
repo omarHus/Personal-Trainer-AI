@@ -10,6 +10,7 @@
 - Python 3.7.x
 - pip
 - virtualenv
+- brew install redis (for celery server)
 - activate virtualenv (myenv) with command line command: source myenv/bin/activate
 - see requirements.txt file to set up virtual env (pip3 install -r requirements.txt)
 - For cloudinary: make sure to run these config vars commands in terminal before starting (i'll email you the api_secret key):
@@ -41,5 +42,4 @@
 
 ## To do:
 - Fix Errors in Heroku Deployment:
-    1. server timeout during app.route('/load_model). i.e. The function takes too long to load the base_model
-    2. server RAM memory overload. Heroku provides 500 MB RAM for free acounts, our flask app uses 600MB every time it runs.
+    1. send json data of output gif to upload_file.html template once function is complete.

@@ -48,34 +48,10 @@
                         while(!response){
                             // do stuff
                            console.log("there was an error!");
-                            }
-                            $.ajax({
-                                type : "POST",
-                                url : '/load_model',
-                                dataType: "json",
-                                data: JSON.stringify("request"),
-                                contentType: 'application/json;charset=UTF-8',
-                                success: function (data) {
-                                    console.log(data);
-                                    $.ajax({
-                                        type : "POST",
-                                        url : '/test_model',
-                                        dataType: "json",
-                                        data: JSON.stringify(""),
-                                        contentType: 'application/json;charset=UTF-8',
-                                        success: function (data) {
-                                            console.log(data);
-                                            window.location.href = "{{ url_for('show_results') }}";
-                                            }
-                                        });
-                                    
-                                    
-                                    }
-                                }); 
                         }
-                        );
+
+                        });
                 }
-            
             }     
                 else{
                     progressElem.innerText = "Video uploaded successfully. Evaluating your squat form..."
