@@ -102,14 +102,14 @@ def classifyImages(frames, base_model):
     frames = frames/frames.max()
     return frames
 
-def loadTrainedModel(modelName):
+def loadTrainedModel(weights_path):
     #Load in Trained Model
     loaded_model = Sequential()
     loaded_model.add(InputLayer((7*7*512,)))    # input layer
     loaded_model.add(Dense(units=1024, activation='sigmoid')) # hidden layer
     loaded_model.add(Dense(2, activation='softmax'))    # output layer
     loaded_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-    loaded_model.load_weights(modelName)
+    loaded_model.load_weights(weights_path)
     loaded_model._make_predict_function()
     return loaded_model
 

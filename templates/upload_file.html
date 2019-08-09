@@ -20,6 +20,7 @@
           </p>
         </fieldset>
     </form>
+    <h2><a href="{{ url_for('reset') }}">Back to Homepage!</a></h2>
 
     <script type='text/javascript'>
 
@@ -77,9 +78,10 @@
                 if ('result' in data) {
                     // show result
                     element.innerText = "Here are the results of your squat evaluation!";
+                    element.appendChild(document.createElement("br"));
                     imgElem = document.createElement("img");
                     console.log(data['result']);
-                    imgElem.src = "static/images/uploads" + data['result'];
+                    imgElem.src = "static/images/uploads/" + data['result'];
                     element.appendChild(imgElem);
                 }
                 else {

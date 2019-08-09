@@ -1,22 +1,21 @@
 from flask import Flask, render_template, request, redirect, jsonify, Response, send_from_directory, url_for
 from celery.result import AsyncResult
 from keras.utils.data_utils import get_file
+from tasks import evaluateSquat
 import testModel2 as tm2
-import os
 import numpy as np
 import json
-from tasks import evaluateSquat
+import os
+
 
 # Configuring Flask app and creating folder to hold gif for each user
 app = Flask(__name__)
-uploads_dir = os.path.join(app.instance_path, 'uploads')
+uploads_dir = os.path.join('static/images', 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 app.config['uploads_dir'] = uploads_dir
 
 # load in models
-base_model   = tm2.load_basemodel()
 weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
-model        = tm2.loadTrainedModel(weights_path)
 
 # Cloud server setup
 import cloudinary as cloud
@@ -40,7 +39,7 @@ def upload_file():
 
 @app.route('/run_test', methods=['POST'])
 def run_test():
-    global base_model, model
+    global weights_path
     # Get json text showing that file has been uploaded directly to cloudinary successfully
     response = request.get_json()
     #Make the images and test them against the model
@@ -49,11 +48,9 @@ def run_test():
     fileID      = response['public_id']
 
     fileName    = fileID + ".gif"
-    output_path = os.path.join('static/images',fileName)
+    output_path = os.path.join('static/images/uploads',fileName)
 
-    base_model_json = base_model.to_json()
-    model_json      = model.to_json()
-    myPredictions = evaluateSquat.delay(fileSource, base_model_json, model_json, output_path, fileName)
+    myPredictions = evaluateSquat.delay(fileSource, output_path, fileName, weights_path)
     return jsonify({}), 202, {'Location': url_for('task_status', task_id=myPredictions.id)}
     # except:
     #     print("Error uploading file")
