@@ -2,13 +2,14 @@ from celery import Celery
 import testModel2 as tm2
 import json
 from keras.models import model_from_json
+from keras.utils.data_utils import get_file
 
 app = Celery()
 app.config_from_object("celery_settings")
 
 # Model Pipeline Defined
 @app.task(bind=True)
-def evaluateSquat(self,file_source, output_path, file_name, weights_path):    
+def evaluateSquat(self,file_source, output_path, file_name):    
     self.update_state(state='STARTED', meta={'status' : "STARTED"})
     # Make image frames from video
     frames      = tm2.makeFrames(file_source)
@@ -21,6 +22,7 @@ def evaluateSquat(self,file_source, output_path, file_name, weights_path):
     frames     = tm2.classifyImages(frames, base_model)
     
     # Make predictions
+    weights_path  = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
     trained_model = tm2.loadTrainedModel(weights_path)
     predictions   = tm2.makepredictions(frames, trained_model)
     goodSquats    = predictions[predictions==0].shape[0]

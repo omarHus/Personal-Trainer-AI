@@ -72,7 +72,7 @@
         // send GET request to status URL
         $.getJSON(status_url, function(data) {
             // update UI
-            element.innerText = data['state'];
+            // element.innerText = data['state'];
             // element.appendChild(loader_element);
             if (data['state'] == 'SUCCESS') {
                 if ('result' in data) {

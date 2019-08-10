@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, jsonify, Response, send_from_directory, url_for
 from celery.result import AsyncResult
-from keras.utils.data_utils import get_file
 from tasks import evaluateSquat
 import testModel2 as tm2
 import numpy as np
@@ -13,9 +12,6 @@ app = Flask(__name__)
 uploads_dir = os.path.join('static/images', 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 app.config['uploads_dir'] = uploads_dir
-
-# load in models
-weights_path = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
 
 # Cloud server setup
 import cloudinary as cloud
@@ -50,7 +46,7 @@ def run_test():
     fileName    = fileID + ".gif"
     output_path = os.path.join('static/images/uploads',fileName)
 
-    myPredictions = evaluateSquat.delay(fileSource, output_path, fileName, weights_path)
+    myPredictions = evaluateSquat.delay(fileSource, output_path, fileName)
     return jsonify({}), 202, {'Location': url_for('task_status', task_id=myPredictions.id)}
     # except:
     #     print("Error uploading file")
