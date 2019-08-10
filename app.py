@@ -9,8 +9,8 @@ import os
 
 # Configuring Flask app and creating folder to hold gif for each user
 app = Flask(__name__)
-uploads_dir = os.path.join('static/images', 'uploads')
-os.makedirs(uploads_dir, exist_ok=True)
+basedir = os.path.abspath(os.path.dirname(__file__))
+uploads_dir = os.path.join(basedir,'static/images/uploads')
 app.config['uploads_dir'] = uploads_dir
 
 # Cloud server setup
@@ -44,7 +44,8 @@ def run_test():
     fileID      = response['public_id']
 
     fileName    = fileID + ".gif"
-    output_path = os.path.join(uploads_dir,fileName)
+    output_path = os.path.join(app.config['uploads_dir'],fileName)
+    print("Debug output path: ", output_path)
 
     myPredictions = evaluateSquat.delay(fileSource, output_path, fileName)
     return jsonify({}), 202, {'Location': url_for('task_status', task_id=myPredictions.id)}
@@ -78,8 +79,8 @@ def task_status(task_id):
 
 @app.route('/reset')
 def reset():
-    for file in os.listdir(uploads_dir):
-        file_path = os.path.join(uploads_dir,file)
+    for file in os.listdir(app.config['uploads_dir']):
+        file_path = os.path.join(app.config['uploads_dir'],file)
         try:
             if os.path.isfile(file_path):
                 os.unlink(file_path)
