@@ -44,7 +44,7 @@ def run_test():
     fileID      = response['public_id']
 
     fileName    = fileID + ".gif"
-    output_path = os.path.join('static/images/uploads',fileName)
+    output_path = os.path.join(uploads_dir,fileName)
 
     myPredictions = evaluateSquat.delay(fileSource, output_path, fileName)
     return jsonify({}), 202, {'Location': url_for('task_status', task_id=myPredictions.id)}
