@@ -19,8 +19,9 @@ app.config['uploads_dir'] = uploads_dir
 
 #####################################################
 ################ Celery Setup #######################
-celery = Celery()
+celery = Celery(app.name)
 celery.config_from_object("celery_settings")
+
 # Model Pipeline Defined
 @celery.task(bind=True)
 def evaluateSquat(self,file_source, output_path, file_name):    
