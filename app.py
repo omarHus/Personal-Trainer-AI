@@ -6,14 +6,16 @@ import numpy as np
 import json
 import os
 
-
-# Configuring Flask app and creating folder to hold gif for each user
-app = Flask(__name__)
-basedir = os.path.abspath(os.path.dirname(__file__))
+#####################################################
+############### Flask App Setup #####################
+app         = Flask(__name__)
+basedir     = os.path.abspath(os.path.dirname(__file__))
 uploads_dir = os.path.join(basedir,'static/images/uploads')
+os.makedirs(uploads_dir,exist_ok=True)
 app.config['uploads_dir'] = uploads_dir
 
-# Cloud server setup
+#####################################################
+############### Cloudinary Setup ####################
 import cloudinary as cloud
 from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary_url
@@ -22,9 +24,11 @@ cloud.config(
   cloud_name = os.environ['CLOUDINARY_CLOUD_NAME'], 
   api_key    = os.environ['CLOUDINARY_API_KEY'],
   api_secret = os.environ['CLOUDINARY_API_SECRET'],
-) # This data is stored in config vars on heroku
+)
 
-#Homepage of website
+#####################################################
+############### Flask Server Routing ################
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -35,7 +39,6 @@ def upload_file():
 
 @app.route('/run_test', methods=['POST'])
 def run_test():
-    global weights_path
     # Get json text showing that file has been uploaded directly to cloudinary successfully
     response = request.get_json()
     #Make the images and test them against the model
@@ -49,10 +52,6 @@ def run_test():
 
     myPredictions = evaluateSquat.delay(fileSource, output_path, fileName)
     return jsonify({}), 202, {'Location': url_for('task_status', task_id=myPredictions.id)}
-    # except:
-    #     print("Error uploading file")
-    #     data = { "status" : "Error"}
-    #     return jsonify(data)
 
 @app.route('/task_status/<task_id>')
 def task_status(task_id):
