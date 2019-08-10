@@ -42,4 +42,4 @@
 
 ## To do:
 - Fix Errors in Heroku Deployment:
-    1. send json data of output gif to upload_file.html template once function is complete.
+    1. Open celery instance within app.py, need to update Procfile for worker line.
