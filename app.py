@@ -100,10 +100,12 @@ def task_status(task_id):
     elif myTask.state != 'FAILURE':
         response = {
             'state': myTask.state,
+            
         }
         if 'result' in myTask.info:
             response['result'] = myTask.info['result']
-            print("The result is ", response['result'])
+            filename = os.path.join(app.config['uploads_dir'],response['result'])
+            print("The file was found: ", os.path.isfile(filename))
     else:
         # something went wrong in the background job
         response = {
