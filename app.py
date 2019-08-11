@@ -11,8 +11,8 @@ import os
 #####################################################
 ############### Flask App Setup #####################
 app         = Flask(__name__)
-basedir     = os.path.abspath(os.path.dirname(__file__))
-uploads_dir = os.path.join(basedir,'static/images/uploads')
+basedir     = os.path.dirname(__file__)
+uploads_dir = os.path.join(basedir,'static/uploads')
 os.makedirs(uploads_dir,exist_ok=True)
 app.config['uploads_dir'] = uploads_dir
 
