@@ -47,7 +47,7 @@ def evaluateSquat(self,file_source, output_path, file_name):
     # Make output GIF of Labeled images
     movie         = tm2.videoOutput(frames, output_path)
     print("Predictions: ", predictions)
-    return {'result' : movie, 'status' : "SUCCESS"}
+    return {'result' : file_name, 'status' : "SUCCESS"}
 
 
 #####################################################
@@ -82,7 +82,8 @@ def run_test():
     fileSource  = response['url']
     fileID      = response['public_id']
 
-    fileName    = fileID + ".gif"
+    # fileName    = fileID + ".gif"
+    fileName    = 'output.gif'
     output_path = os.path.join(app.config['uploads_dir'],fileName)
     print("Debug output path: ", output_path)
 

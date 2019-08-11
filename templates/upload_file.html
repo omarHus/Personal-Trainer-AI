@@ -42,8 +42,8 @@
         xhr.open("post", "https://api.cloudinary.com/v1_1/aitrainer/video/upload");
         xhr.send(new FormData(formElement));
         xhr.onreadystatechange = function() {
-            if(xhr.readyState === 4){
-                if(xhr.status === 200 || xhr.status === 204){
+            if(xhr.readyState == 4){
+                if(xhr.status == 200 || xhr.status == 204){
                     var responseData = this.responseText
                     $.ajax({
                         type: 'POST',
@@ -79,10 +79,12 @@
                     // show result
                     element.innerText = "Here are the results of your squat evaluation!";
                     element.appendChild(document.createElement("br"));
-                    imgElem = document.createElement("img");
+                    var fileName  = 'images/uploads/' + data['result'];
+                    var imgString = '<img src="{{ url_for('static', filename='MYFILENAME') }}">'.replace("MYFILENAME",fileName);
+                    $(element).html(imgString);
                     console.log(data['result']);
-                    imgElem.src = data['result'];
-                    element.appendChild(imgElem);
+                    // imgElem.src = data['result'];
+                    // element.appendChild(imgElem);
                 }
                 else {
                     // something unexpected happened

@@ -42,4 +42,5 @@
 
 ## To do:
 - Fix Errors in Heroku Deployment:
-    1. Open celery instance within app.py, need to update Procfile for worker line.
+    1. Fix path to output gif in javascript
+    2. Make post request 
