@@ -82,7 +82,7 @@ def run_test():
     fileID      = response['public_id']
 
     fileName    = fileID + ".gif"
-    output_path = os.path.join(app.config['uploads_dir'],fileName)
+    output_path = os.path.join(uploads_dir,fileName)
     print("Debug output path: ", output_path)
 
     myPredictions = evaluateSquat.delay(fileSource, output_path, fileName)
@@ -103,7 +103,7 @@ def task_status(task_id):
         }
         if 'result' in myTask.info:
             response['result'] = myTask.info['result']
-            filename = os.path.join(app.config['uploads_dir'],response['result'])
+            filename = os.path.join(uploads_dir,response['result'])
             print("The file was found: ", os.path.isfile(filename))
     else:
         # something went wrong in the background job
@@ -115,12 +115,12 @@ def task_status(task_id):
 
 @app.route('/uploads/<filename>')
 def send_file(filename):
-    return send_from_directory(app.config['uploads_dir'], filename)
+    return send_from_directory(uploads_dir, filename)
 
 @app.route('/reset')
 def reset():
-    for file in os.listdir(app.config['uploads_dir']):
-        file_path = os.path.join(app.config['uploads_dir'],file)
+    for file in os.listdir(uploads_dir):
+        file_path = os.path.join(uploads_dir,file)
         try:
             if os.path.isfile(file_path):
                 os.unlink(file_path)
