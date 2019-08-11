@@ -126,7 +126,7 @@ def createLabeledImages(orig_images, labels):
             color = (0,255,0) #green
         else:
             color = (255,0,0) #red
-        cv2.putText(img, classMap(labels[count]), int(244/2), font, 6, color) #classMap is a function i wrote to map integer of prediction to string like "Good"
+            cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 6, color) #classMap is a function i wrote to map integer of prediction to string like "Good"
         count += 1
     cv2.destroyAllWindows()
     return orig_images

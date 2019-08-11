@@ -82,8 +82,7 @@ def run_test():
     fileSource  = response['url']
     fileID      = response['public_id']
 
-    # fileName    = fileID + ".gif"
-    fileName    = 'output.gif'
+    fileName    = fileID + ".gif"
     output_path = os.path.join(app.config['uploads_dir'],fileName)
     print("Debug output path: ", output_path)
 
