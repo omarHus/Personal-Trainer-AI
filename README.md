@@ -43,4 +43,3 @@
 ## To do:
 - Fix Errors in Heroku Deployment:
     1. Fix path to output gif in javascript
-    2. Make post request 

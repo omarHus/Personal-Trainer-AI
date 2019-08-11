@@ -11,9 +11,8 @@ import os
 #####################################################
 ############### Flask App Setup #####################
 app         = Flask(__name__)
-basedir     = os.path.dirname(__file__)
-uploads_dir = os.path.join(basedir,'static/uploads')
-os.makedirs(uploads_dir,exist_ok=True)
+uploads_dir = os.path.join(app.instance_path, 'uploads')
+os.makedirs(uploads_dir, exist_ok=True)
 app.config['uploads_dir'] = uploads_dir
 
 #####################################################
@@ -113,6 +112,10 @@ def task_status(task_id):
             'status': str(myTask.info),  # this is the exception raised
         }
     return jsonify(response)
+
+@app.route('/uploads/<filename>')
+def send_file(filename):
+    return send_from_directory(app.config['uploads_dir'], filename)
 
 @app.route('/reset')
 def reset():
