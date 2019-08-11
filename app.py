@@ -3,7 +3,6 @@ from celery.result import AsyncResult
 from celery import Celery
 from keras.models import model_from_json
 from keras.utils.data_utils import get_file
-from tasks import evaluateSquat
 import testModel2 as tm2
 import numpy as np
 import json
@@ -48,7 +47,7 @@ def evaluateSquat(self,file_source, output_path, file_name):
     # Make output GIF of Labeled images
     movie         = tm2.videoOutput(frames, output_path)
     print("Predictions: ", predictions)
-    return {'result' : file_name, 'status' : "SUCCESS"}
+    return {'result' : movie, 'status' : "SUCCESS"}
 
 
 #####################################################
