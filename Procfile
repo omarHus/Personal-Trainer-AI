@@ -1,2 +1,2 @@
 web: gunicorn app:app
-worker: celery worker -A app:celery --concurrency=3 -l INFO
+worker: celery worker -A app:celery --concurrency=5 -l INFO

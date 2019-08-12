@@ -45,6 +45,7 @@ def evaluateSquat(self,file_source, output_path, file_name):
     frames        = tm2.createLabeledImages(orig_frames,predictions)
     # Make output GIF of Labeled images
     movie         = tm2.videoOutput(frames, output_path)
+    print("File was found in celery: ", os.path.isfile(output_path))
     print("Predictions: ", predictions)
     return {'result' : file_name, 'status' : "SUCCESS"}
 

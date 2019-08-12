@@ -19,7 +19,16 @@ import os.path
 from os import path
 
 def main():
-    makeFrames('fakefile.txt')
+    testFrames = makeFrames('videos/VID_20190805_232228_ualszf.mp4')
+    origFrames = testFrames
+    testFrames = processImages(testFrames)
+    base_model = load_basemodel()
+    testFrames = classifyImages(testFrames,base_model)
+    weights    = get_file('trained_model.h5','https://github.com/omarHus/physioWebApp/raw/master/trained_model.h5')
+    model      = loadTrainedModel(weights)
+    prediction = makepredictions(testFrames,model)
+    testFrames = createLabeledImages(origFrames,prediction)
+    output     = videoOutput(testFrames,'output.gif')
     # scores = model.evaluate(test_image, test_y)
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
@@ -119,14 +128,17 @@ def makepredictions(testCases, modelName):
 
 #Label frames based on predictions from model e.g. Good squat or bad squat
 def createLabeledImages(orig_images, labels):
-    font  = cv2.FONT_HERSHEY_SIMPLEX
+    font      = cv2.FONT_HERSHEY_SIMPLEX
+    fontScale = 5
+    line_type = 2
     count = 0
     for img in orig_images:
         if labels[count] == 0: #good squat
             color = (0,255,0) #green
         else:
             color = (255,0,0) #red
-            cv2.putText(img, classMap(labels[count]), (0,int(244/2)), font, 5, color) #classMap is a function i wrote to map integer of prediction to string like "Good"
+
+        cv2.putText(img, classMap(labels[count]), (0, int(244/2)), font, fontScale, color, line_type) #classMap is a function i wrote to map integer of prediction to string like "Good"
         count += 1
     cv2.destroyAllWindows()
     return orig_images
@@ -134,6 +146,7 @@ def createLabeledImages(orig_images, labels):
     #Create Gif out of labeled output images to display on results.html page
 def videoOutput(frames, output_path):
     imageio.mimsave(output_path, frames, duration=0.3)
+    print("File was found in function: ", os.path.isfile(output_path))
     return output_path
 
 #Checking to see if video file got rotated
