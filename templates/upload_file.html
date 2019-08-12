@@ -79,9 +79,10 @@
                     // show result
                     element.innerText = "Here are the results of your squat evaluation!";
                     element.appendChild(document.createElement("br"));
-                    var fileName  = data['result'];
-                    var imgString = '<img src="{{ url_for('send_file', filename='MYFILE') }}">'.replace("MYFILE", fileName);
-                    console.log(imgString)
+                    // var fileName  = data['result'];
+                    // var imgString = '<img src="uploads/MYFILE">'.replace("MYFILE", fileName);
+                    var imgString = data['result'];
+                    console.log(imgString);
                     $(element).html(imgString);
                     // imgElem.src = data['result'];
                     // element.appendChild(imgElem);

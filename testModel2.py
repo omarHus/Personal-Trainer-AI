@@ -17,6 +17,8 @@ import imageio
 import ffmpeg
 import os.path
 from os import path
+import cloudinary
+import cloudinary.uploader
 
 def main():
     testFrames = makeFrames('videos/VID_20190805_232228_ualszf.mp4')
@@ -28,7 +30,10 @@ def main():
     model      = loadTrainedModel(weights)
     prediction = makepredictions(testFrames,model)
     testFrames = createLabeledImages(origFrames,prediction)
-    output     = videoOutput(testFrames,'output.gif')
+    output     = videoOutput(testFrames,'output.mp4')
+    fileID     = videoOut2Cloud('output.mp4', "omar1")
+    imgtag     = cloudinary.CloudinaryVideo(fileID, format="mp4").video()
+    print("ImgTag is ",imgtag)
     # scores = model.evaluate(test_image, test_y)
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
@@ -136,18 +141,32 @@ def createLabeledImages(orig_images, labels):
         if labels[count] == 0: #good squat
             color = (0,255,0) #green
         else:
-            color = (255,0,0) #red
+            color = (255,0,0)
 
         cv2.putText(img, classMap(labels[count]), (0, int(244/2)), font, fontScale, color, line_type) #classMap is a function i wrote to map integer of prediction to string like "Good"
         count += 1
     cv2.destroyAllWindows()
-    return orig_images
-
-    #Create Gif out of labeled output images to display on results.html page
+    return orig_images   #Create Gif out of labeled output images to display on results.html page
 def videoOutput(frames, output_path):
-    imageio.mimsave(output_path, frames, duration=0.3)
-    print("File was found in function: ", os.path.isfile(output_path))
+    # imageio.mimsave(output_path, frames, duration=0.3) #this makes a gif
+    height, width, layers = frames[0].shape
+    size                  = (width,height)
+
+    # set up videowriter in opencv
+    fourcc   = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+    fps      = 0.5
+    videoOut = cv2.VideoWriter(output_path, fourcc, fps, size)
+
+    # write images out
+    for frame in frames:
+        videoOut.write(frame)
+    videoOut.release()
     return output_path
+
+def videoOut2Cloud(output_path, fileID):
+    file_out = fileID + "out"
+    cloudinary.uploader.upload(output_path, public_id=file_out, resource_type = "video", format="mp4")
+    return file_out
 
 #Checking to see if video file got rotated
 def check_rotation(path_video_file):

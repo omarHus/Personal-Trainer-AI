@@ -10,7 +10,7 @@
 - Python 3.7.x
 - pip
 - virtualenv
-- brew install redis (for celery server)
+- brew install redis (for celery server) - Follow this tutorial: https://www.youtube.com/watch?v=VPK0bYF9WzY
 - activate virtualenv (myenv) with command line command: source myenv/bin/activate
 - see requirements.txt file to set up virtual env (pip3 install -r requirements.txt)
 - For cloudinary: make sure to run these config vars commands in terminal before starting (i'll email you the api_secret key):
@@ -42,4 +42,6 @@
 
 ## To do:
 - Fix Errors in Heroku Deployment:
-    1. Fix path to output gif in javascript
+    1. Send output video to cloudinary, send html tag to taskstatus route and then to ajax and display it.
+    2. Remove some imports from environment to free some memory. Check to be sure which one's are necessary.
+    3. Post pipeline and web structure diagrams on README

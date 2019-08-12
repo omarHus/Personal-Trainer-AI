@@ -22,7 +22,7 @@ celery.config_from_object("celery_settings")
 
 # Model Pipeline Defined
 @celery.task(bind=True)
-def evaluateSquat(self,file_source, output_path, file_name):    
+def evaluateSquat(self,file_source, output_path, file_name, fileID):    
     self.update_state(state='STARTED', meta={'status' : "STARTED"})
     # Make image frames from video
     frames      = tm2.makeFrames(file_source)
@@ -45,10 +45,9 @@ def evaluateSquat(self,file_source, output_path, file_name):
     frames        = tm2.createLabeledImages(orig_frames,predictions)
     # Make output GIF of Labeled images
     movie         = tm2.videoOutput(frames, output_path)
-    print("File was found in celery: ", os.path.isfile(output_path))
-    print("Predictions: ", predictions)
-    return {'result' : file_name, 'status' : "SUCCESS"}
-
+    movieID       = tm2.videoOut2Cloud(output_path, fileID)
+    print("movie id is ", movieID)
+    return {'result' : movieID, 'status' : "SUCCESS"}
 
 #####################################################
 ############### Cloudinary Setup ####################
@@ -64,7 +63,6 @@ cloud.config(
 
 #####################################################
 ############### Flask Server Routing ################
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -76,19 +74,18 @@ def upload_file():
 @app.route('/run_test', methods=['POST'])
 def run_test():
     # Get json text showing that file has been uploaded directly to cloudinary successfully
-    response = request.get_json()
-    #Make the images and test them against the model
-    # try:
+    response    = request.get_json()
     fileSource  = response['url']
     fileID      = response['public_id']
-
-    fileName    = fileID + ".gif"
+    fileName    = fileID + ".mp4"
     output_path = os.path.join(uploads_dir,fileName)
     print("Debug output path: ", output_path)
 
-    myPredictions = evaluateSquat.delay(fileSource, output_path, fileName)
+    # Run main pipeline function using asynchronous worker dyno
+    myPredictions = evaluateSquat.delay(fileSource, output_path, fileName, fileID)
     return jsonify({}), 202, {'Location': url_for('task_status', task_id=myPredictions.id)}
 
+# This route is called on the client side by AJAX to poll when the squat has been evaluated
 @app.route('/task_status/<task_id>')
 def task_status(task_id):
     myTask = evaluateSquat.AsyncResult(task_id)
@@ -100,12 +97,13 @@ def task_status(task_id):
     elif myTask.state != 'FAILURE':
         response = {
             'state': myTask.state,
-            
         }
+        # Successfully evaluated squat. Return video to client side.
         if 'result' in myTask.info:
-            response['result'] = myTask.info['result']
-            filename = os.path.join(uploads_dir,response['result'])
-            print("The file was found: ", os.path.isfile(filename))
+            movieID = myTask.info['result']
+            response['result']  = cloudinary.CloudinaryVideo(movieID, format="mp4").video(width=400, aspect_ratio="1:1")
+            print("The img tag is ", response['result'])
+            # response['result'] = myTask.info['result']  
     else:
         # something went wrong in the background job
         response = {
@@ -114,10 +112,7 @@ def task_status(task_id):
         }
     return jsonify(response)
 
-@app.route('/uploads/<filename>')
-def send_file(filename):
-    return send_from_directory(uploads_dir, filename)
-
+# Get rid of memory leaks
 @app.route('/reset')
 def reset():
     for file in os.listdir(uploads_dir):
