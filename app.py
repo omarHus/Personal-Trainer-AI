@@ -48,10 +48,8 @@ def evaluateSquat(self,file_source, output_path, file_name, fileID):
     movieID       = tm2.videoOut2Cloud(output_path, fileID)
     
     # remove file from memory and get rid of other memory leaks
-    trained_model = None
-    base_model    = None
-    frames        = None
-    orig_frames   = None
+    del trained_model, base_model, frames, orig_frames, movie, goodSquats, badSquats, predictions, weights_path
+
     for file in os.listdir(uploads_dir):
         file_path = os.path.join(uploads_dir,file)
         try:
@@ -115,7 +113,7 @@ def task_status(task_id):
         # Successfully evaluated squat. Return video to client side.
         if 'result' in myTask.info:
             movieID = myTask.info['result']
-            response['result']  = cloudinary.CloudinaryVideo(movieID, format="mp4").video(width=400, aspect_ratio="1:1")
+            response['result']  = cloudinary.CloudinaryVideo(movieID, format="mp4").video(width=350)
             print("The img tag is ", response['result'])
             # response['result'] = myTask.info['result']  
     else:

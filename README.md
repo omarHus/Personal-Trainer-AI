@@ -43,6 +43,5 @@
 
 ## To do:
 - Fix Errors in Heroku Deployment:
-    1. Send output video to cloudinary, send html tag to taskstatus route and then to ajax and display it.
-    2. Remove some imports from environment to free some memory. Check to be sure which one's are necessary.
-    3. Post pipeline and web structure diagrams on README
+    1. Clear up RAM on worker dyno
+    2. Post pipeline and web structure diagrams on README

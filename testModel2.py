@@ -154,7 +154,7 @@ def videoOutput(frames, output_path):
 
     # set up videowriter in opencv
     fourcc   = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-    fps      = 0.5
+    fps      = 0.2
     videoOut = cv2.VideoWriter(output_path, fourcc, fps, size)
 
     # write images out
