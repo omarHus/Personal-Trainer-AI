@@ -11,6 +11,7 @@
 - pip
 - virtualenv
 - brew install redis (for celery server) - Follow this tutorial: https://www.youtube.com/watch?v=VPK0bYF9WzY
+- Make virtual environement: virtualenv myenv
 - activate virtualenv (myenv) with command line command: source myenv/bin/activate
 - see requirements.txt file to set up virtual env (pip3 install -r requirements.txt)
 - For cloudinary: make sure to run these config vars commands in terminal before starting (i'll email you the api_secret key):

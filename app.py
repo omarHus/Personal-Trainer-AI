@@ -46,6 +46,20 @@ def evaluateSquat(self,file_source, output_path, file_name, fileID):
     # Make output GIF of Labeled images
     movie         = tm2.videoOutput(frames, output_path)
     movieID       = tm2.videoOut2Cloud(output_path, fileID)
+    
+    # remove file from memory and get rid of other memory leaks
+    trained_model = None
+    base_model    = None
+    frames        = None
+    orig_frames   = None
+    for file in os.listdir(uploads_dir):
+        file_path = os.path.join(uploads_dir,file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(e)
+    
     print("movie id is ", movieID)
     return {'result' : movieID, 'status' : "SUCCESS"}
 
