@@ -84,6 +84,10 @@
                     var imgString = data['result'];
                     console.log(imgString);
                     $(element).html(imgString);
+                    var videoElem = document.getElementsByTagName("video")[0];
+                    videoElem.setAttribute('controls',"controls");
+                    videoElem.setAttribute('autoplay',"autoplay");
+                    videoElem.setAttribute('muted',"muted");
                     // imgElem.src = data['result'];
                     // element.appendChild(imgElem);
                 }
