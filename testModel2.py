@@ -154,7 +154,7 @@ def videoOutput(frames, output_path):
 
     # set up videowriter in opencv
     fourcc   = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-    fps      = 0.2
+    fps      = 1.1
     videoOut = cv2.VideoWriter(output_path, fourcc, fps, size)
 
     # write images out
@@ -165,7 +165,7 @@ def videoOutput(frames, output_path):
 
 def videoOut2Cloud(output_path, fileID):
     file_out = fileID + "out"
-    cloudinary.uploader.upload(output_path, public_id=file_out, resource_type = "video", format="mp4")
+    cloudinary.uploader.upload(output_path, public_id=file_out, resource_type = "video", format="mp4", folder="samples/")
     return file_out
 
 #Checking to see if video file got rotated

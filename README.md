@@ -15,9 +15,9 @@
 - activate virtualenv (myenv) with command line command: source myenv/bin/activate
 - see requirements.txt file to set up virtual env (pip3 install -r requirements.txt)
 - For cloudinary: make sure to run these config vars commands in terminal before starting (i'll email you the api_secret key):
-        export CLOUDINARY_CLOUD_NAME="aitrainer"  
-        export CLOUDINARY_API_KEY="862358378255759"  
-        export CLOUDINARY_API_SECRET="****************" 
+    export CLOUDINARY_CLOUD_NAME="physioai"  
+    export CLOUDINARY_API_KEY="172784452996959"  
+    export CLOUDINARY_API_SECRET="****************" 
 
 ## How to Run on Local Host
 - command line: redis-server
@@ -43,5 +43,4 @@
 
 ## To do:
 - Fix Errors in Heroku Deployment:
-    1. Clear up RAM on worker dyno
-    2. Post pipeline and web structure diagrams on README
+    1. Post pipeline and web structure diagrams on README

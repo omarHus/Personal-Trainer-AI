@@ -8,7 +8,7 @@
         <fieldset>
           <legend>Upload</legend>
           <p>
-            <input type="hidden" name="upload_preset" value="jck6vrrm">
+            <input type="hidden" name="upload_preset" value="ffkhmiad">
           </p>
           <p>
             <label >Select file:
@@ -39,7 +39,7 @@
         if (!formElement.action) { return; }
         var xhr = new XMLHttpRequest();
         xhr.onload = ajaxSuccess;
-        xhr.open("post", "https://api.cloudinary.com/v1_1/aitrainer/video/upload");
+        xhr.open("post", "https://api.cloudinary.com/v1_1/physioai/video/upload");
         xhr.send(new FormData(formElement));
         xhr.onreadystatechange = function() {
             if(xhr.readyState == 4){
@@ -88,6 +88,7 @@
                     videoElem.setAttribute('controls',"controls");
                     videoElem.setAttribute('autoplay',"autoplay");
                     videoElem.setAttribute('muted',"muted");
+                    videoElem.setAttribute('loop',"loop");
                     // imgElem.src = data['result'];
                     // element.appendChild(imgElem);
                 }

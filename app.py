@@ -57,8 +57,6 @@ def evaluateSquat(self,file_source, output_path, file_name, fileID):
                 os.unlink(file_path)
         except Exception as e:
             print(e)
-    
-    print("movie id is ", movieID)
     return {'result' : movieID, 'status' : "SUCCESS"}
 
 #####################################################
@@ -91,7 +89,6 @@ def run_test():
     fileID      = response['public_id']
     fileName    = fileID + ".mp4"
     output_path = os.path.join(uploads_dir,fileName)
-    print("Debug output path: ", output_path)
 
     # Run main pipeline function using asynchronous worker dyno
     myPredictions = evaluateSquat.delay(fileSource, output_path, fileName, fileID)
@@ -112,9 +109,8 @@ def task_status(task_id):
         }
         # Successfully evaluated squat. Return video to client side.
         if 'result' in myTask.info:
-            movieID = myTask.info['result']
-            response['result']  = cloudinary.CloudinaryVideo(movieID, format="mp4").video(width=350)
-            print("The img tag is ", response['result'])
+            movieID = "samples/" + myTask.info['result']
+            response['result']  = cloudinary.CloudinaryVideo(movieID, format="mp4").video(width=300)
             # response['result'] = myTask.info['result']  
     else:
         # something went wrong in the background job
