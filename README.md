@@ -5,6 +5,9 @@
 - Provide user live feedback on their movements during specific exercises.
 - Use machine learning models to classify correct and incorrect movement.
 
+## Process
+- see [outline.md](outline.md) for model pipeline and web structure.
+
 ## Pre-requisites
 - Git
 - Python 3.7.x
