@@ -4,4 +4,4 @@
 ![alt text](diagrams/webstructure.png "Web Structure Diagram")
 
 ## Machine Learning Pipeline
-![alt text](pipeline.png "Machine Learning pipeline")
+![alt text](diagrams/pipeline.png "Machine Learning pipeline")
