@@ -123,6 +123,7 @@ def task_status(task_id):
 # Get rid of memory leaks
 @app.route('/reset')
 def reset():
+    del response, myTask, fileSource, fileID, fileName, output_path, myPredictions
     for file in os.listdir(uploads_dir):
         file_path = os.path.join(uploads_dir,file)
         try:

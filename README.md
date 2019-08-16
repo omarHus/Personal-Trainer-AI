@@ -43,4 +43,8 @@
 
 ## To do:
 - Fix Errors in Heroku Deployment:
-    1. Post pipeline and web structure diagrams on README
+    1. Add webcam option instead of video upload
+    2. Improve UI
+        a. resize output video
+        c. Improve text size on homepage + make more concise text.
+    5. Post pipeline and web structure diagrams on README
